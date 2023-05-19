@@ -17,6 +17,10 @@ inputs:
     description: "Show update advisor"
     required: false
     default: "false"
+  fail-on-cvss:
+    description: "The maximum allowed cvss in found vulnerabilities to pass the step"
+    required: false
+    default: "10"
   url:
     description: "A git URL to work with in case the scan is not for the current repository"
     required: false
@@ -49,6 +53,19 @@ inputs:
     description: "Run the SRCCLR with the `--skip-vms` option"
     required: false
     default: "false"
+  pr-on:
+    description: "Create pull request on"
+    required: false
+    default: ""
+  pr-no-breaking-updates:
+    description: "Allow breaking updates on pull request"
+    required: false
+    default: "false"
+  pr-ignore-closed:
+    description: "Ignore closed pull requests"
+    required: false
+    default: "false"
+
 runs:
   using: 'node16'
   main: 'dist/index.js'

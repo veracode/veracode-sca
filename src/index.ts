@@ -51,14 +51,14 @@ export async function run(options:Options, msgFunc: (msg: string) => void) {
         await syncExistingOpenIssues(options);
 
         // check for failing the step
-        /*
+        
         const failingVul = vulnerabilities.filter(vul => vul.cvssScore>=options.failOnCVSS);
         if (failingVul.length>0) {
             core.setFailed(`Found Vulnerability with CVSS equal or greater than ${options.failOnCVSS}`);
         } else {
             msgFunc(`No 3rd party library found with Vulnerability of CVSS equal or greater than ${options.failOnCVSS}`);
         }
-        */
+        
     }
 
     msgFunc(`Scan finished.\nFull Report Details:   ${scaResJson.records[0].metadata.report}`);
