@@ -1,0 +1,33 @@
+---
+name: Push to features and bug
+
+on:
+  push:
+    branches:
+      - feature/**
+      - bug/**
+      - main
+      - ACOE**
+
+jobs:
+  lint_code_base:
+    name: Lint Code Base
+    uses: WESCO-International/workflow-templates/.github/workflows/super-linter.yml@main
+
+  build:
+    needs: lint_code_base
+    runs-on: [self-hosted, Linux, prod]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: |
+          npm i
+          npm run build
+
+# jscpd:ignore-end
