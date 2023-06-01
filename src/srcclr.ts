@@ -20,7 +20,7 @@ const cleanCollectors = (inputArr: Array<string>) => {
 
 export async function runAction(options: Options) {
   try {
-    core.info('Start command')
+    core.info('Start command Boris')
     let extraCommands: string = ''
     if (options.url.length > 0) {
       extraCommands = `--url ${options.url} `
