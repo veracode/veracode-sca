@@ -9,7 +9,8 @@ Veracode Software Composition Analysis (agent-based scan) as a GitHub Action wit
 If the action runs on a pull request, it will either add a comment with the scan output to the PR or it will automatically link all created GitHub issues to the PR. This will help your review process to see if the PR can be approved or not.
   
 ## Inputs
-:exclamation: You will need to provide `SRCCLR_API_TOKEN` as an environment variable (see examples below).
+:exclamation: You will need to provide `SRCCLR_API_TOKEN` as an environment variable (see examples below).  
+This is only required if `workspace-autoamtion`` is set to false. If workspace-automation is set to true, the workspace, project and token will be automatically generated or regenerated to run the scan. The workspace will be called `github-orgname-reponame` and the project will be called `github-orgname-reponame`.
 
 :exclamation: If using an org-level agent, you will need to provide `SRCCLR_WORKSPACE_SLUG` as an environment variable.
   
@@ -28,7 +29,13 @@ You may be able to simply use `${{ secrets.GITHUB_TOKEN }}` as a default option 
 
 Otherwise, you may be able create and assign __as secret__ a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and assign it with the required permissions (`repo` scope).
 
-
+  
+### `workspace-automation`
+**Optional** - whether to automatically create a workspace, project and token for the scan  
+  
+Default Value: __false__
+  
+  
 ### `create-issues`
 **Optional** - whether to create issues from found vulnerabilities
 

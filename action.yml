@@ -9,6 +9,9 @@ inputs:
     description: "Authorization token to query and create issues"
     default: ${{ github.token }}
     required: true
+  workspace_automation:
+    description: "Workspace automation ti autocreate workspaces and remove the need to setup a token upfront"
+    required: false
   quick:
     description: "Run the SRCCLR with the `--quick` options"
     required: false

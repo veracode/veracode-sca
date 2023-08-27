@@ -7,6 +7,8 @@ import { SCA_OUTPUT_FILE,run, runText } from "./index";
 import * as github from '@actions/github'
 import { env } from "process";
 import { writeFile } from 'fs';
+import * as auth from './auth'
+import Axios from "axios";
 
 
 const cleanCollectors = (inputArr:Array<string>) => {
@@ -20,6 +22,68 @@ const cleanCollectors = (inputArr:Array<string>) => {
 }
 
 export async function runAction (options: Options)  {
+    //check if workspace_autoamtion is set to true
+    core.info('Check if workspace_autoamtion is set to true');
+    if ( options.workspace_automation = true ) {
+        core.info('workspace_autoamtion is set to ture, will run workspace_autoamtion');
+
+        //set the platform region and base API url
+        const API_ID = env.API_ID;
+        const cleanedID = API_ID?.replace('vera01ei-','') ?? '';
+        const API_KEY = env.API_KEY;
+        const cleanedKEY = API_KEY?.replace('vera01es-','') ?? '';
+        const REPO_NAME = env.GITHUB_REPOSITORY ?? '';
+
+        if ( API_ID?.startsWith('vera01ei-') ) {
+            core.info('Platform is ER');
+            var API_BASE_URL = 'https://api.veracode.eu';
+        }
+        else {
+            core.info('Platform is US');
+            var API_BASE_URL = 'https://api.veracode.com';
+        }
+
+        //check if workspace exists
+        var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D='+encodeURIComponent(REPO_NAME)
+        var checkWorkspace = await Axios.request({
+            method: 'GET',
+            headers:{
+                'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
+            },
+            url: API_BASE_URL+path
+          });
+          
+          var workspaces = checkWorkspace.data._embedded.workspaces
+          console.log(JSON.stringify(workspaces))
+
+
+/*
+
+        if ( worksapce == null ) {
+            core.info('workspace doesn\'t exists and needs to be created');
+            //create workspace
+        }
+
+        //check if agent already exists
+        if ( agent == null ) {
+            core.info('agent doesn\'t exists and needs to be created');
+            //create agent
+        }
+        else {
+            core.info('agent already exists, regenerat token');
+        }
+
+        //set token for the actual scan.
+
+*/
+
+    }
+    else {
+        core.info('workspace_autoamtion is set to false, will not run workspace_autoamtion');
+    }
+
+
+
     try {
   
         core.info('Start command');
