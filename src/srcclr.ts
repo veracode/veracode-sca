@@ -34,6 +34,12 @@ export async function runAction (options: Options)  {
         const cleanedKEY = API_KEY?.replace('vera01es-','') ?? '';
         const REPO_NAME = env.GITHUB_REPOSITORY ?? '';
 
+        console.log('API_ID: '+API_ID)
+        console.log('API_KEY: '+API_KEY)
+        console.log('REPO_NAME: '+REPO_NAME)
+        console.log('cleanedID: '+cleanedID)
+        console.log('cleanedKEY: '+cleanedKEY)
+
         if ( API_ID?.startsWith('vera01ei-') ) {
             core.info('Platform is ER');
             var API_BASE_URL = 'https://api.veracode.eu';

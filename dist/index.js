@@ -20439,6 +20439,11 @@ function runAction(options) {
             const API_KEY = process_1.env.VKEY;
             const cleanedKEY = (_b = API_KEY === null || API_KEY === void 0 ? void 0 : API_KEY.replace('vera01es-', '')) !== null && _b !== void 0 ? _b : '';
             const REPO_NAME = (_c = process_1.env.GITHUB_REPOSITORY) !== null && _c !== void 0 ? _c : '';
+            console.log('API_ID: ' + API_ID);
+            console.log('API_KEY: ' + API_KEY);
+            console.log('REPO_NAME: ' + REPO_NAME);
+            console.log('cleanedID: ' + cleanedID);
+            console.log('cleanedKEY: ' + cleanedKEY);
             if (API_ID === null || API_ID === void 0 ? void 0 : API_ID.startsWith('vera01ei-')) {
                 core.info('Platform is ER');
                 var API_BASE_URL = 'https://api.veracode.eu';
