@@ -27,6 +27,7 @@ var getByteArray = (hex:any) => {
 export function generateHeader(url:string, method:string, host:string, id:string, key:string) {
 
 	var data = `id=${id}&host=${host}&url=${url}&method=${method}`;
+	console.log('DATA: '+data);
 	var timestamp = (new Date().getTime()).toString();
 	var nonce = crypto.randomBytes(16).toString("hex");
 

@@ -19878,6 +19878,7 @@ var getByteArray = (hex) => {
 };
 function generateHeader(url, method, host, id, key) {
     var data = `id=${id}&host=${host}&url=${url}&method=${method}`;
+    console.log('DATA: ' + data);
     var timestamp = (new Date().getTime()).toString();
     var nonce = crypto_1.default.randomBytes(16).toString("hex");
     // calculate signature
@@ -20448,6 +20449,7 @@ function runAction(options) {
             }
             //check if workspace exists
             var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D=' + encodeURIComponent(REPO_NAME);
+            console.log('PATH: ' + path);
             var checkWorkspace = yield axios_1.default.request({
                 method: 'GET',
                 headers: {
