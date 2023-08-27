@@ -20427,23 +20427,25 @@ const cleanCollectors = (inputArr) => {
     return allowed;
 };
 function runAction(options) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
         //check if workspace_autoamtion is set to true
         core.info('Check if workspace_autoamtion is set to true');
         if (options.workspace_automation = true) {
             core.info('workspace_autoamtion is set to ture, will run workspace_autoamtion');
             //set the platform region and base API url
-            const API_ID = process.env.VID;
+            const API_ID = process_1.env.VID;
             const cleanedID = (_a = API_ID === null || API_ID === void 0 ? void 0 : API_ID.replace('vera01ei-', '')) !== null && _a !== void 0 ? _a : '';
-            const API_KEY = process.env.VKEY;
+            const API_KEY = process_1.env.VKEY;
             const cleanedKEY = (_b = API_KEY === null || API_KEY === void 0 ? void 0 : API_KEY.replace('vera01es-', '')) !== null && _b !== void 0 ? _b : '';
             const REPO_NAME = (_c = process_1.env.GITHUB_REPOSITORY) !== null && _c !== void 0 ? _c : '';
+            const SRCCLR_API_TOKEN = (_d = process_1.env.SRCCLR_API_TOKEN) !== null && _d !== void 0 ? _d : '';
             console.log('API_ID: ' + API_ID);
             console.log('API_KEY: ' + API_KEY);
             console.log('REPO_NAME: ' + REPO_NAME);
             console.log('cleanedID: ' + cleanedID);
             console.log('cleanedKEY: ' + cleanedKEY);
+            console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
             if (API_ID === null || API_ID === void 0 ? void 0 : API_ID.startsWith('vera01ei-')) {
                 core.info('Platform is ER');
                 var API_BASE_URL = 'https://api.veracode.eu';
@@ -20524,7 +20526,7 @@ function runAction(options) {
                     core.error(`stderr: ${data}`);
                 });
                 execution.on('close', (code) => __awaiter(this, void 0, void 0, function* () {
-                    var _d;
+                    var _e;
                     core.info('Create issue "true" - on close');
                     if (core.isDebug()) {
                         core.info(output);
@@ -20539,7 +20541,7 @@ function runAction(options) {
                         const context = github.context;
                         const repository = process.env.GITHUB_REPOSITORY;
                         const repo = repository.split("/");
-                        const commentID = (_d = context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.number;
+                        const commentID = (_e = context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.number;
                         let pr_header = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>';
                         summary_message = `Veracode SCA Scan finished with exit code: ${code}. Please review created and linked issues`;
                         try {
@@ -20598,7 +20600,7 @@ function runAction(options) {
                     core.error(`stderr: ${data}`);
                 });
                 execution.on('close', (code) => __awaiter(this, void 0, void 0, function* () {
-                    var _e;
+                    var _f;
                     //core.info(output);
                     core.info(`Scan finished with exit code:  ${code}`);
                     //write output to file
@@ -20629,7 +20631,7 @@ function runAction(options) {
                         const context = github.context;
                         const repository = process.env.GITHUB_REPOSITORY;
                         const repo = repository.split("/");
-                        const commentID = (_e = context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.number;
+                        const commentID = (_f = context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.number;
                         let commentBody = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>';
                         commentBody += "Veraocde SCA Scan failed with exit code " + code + "\n";
                         commentBody += '\n<details><summary>Veracode SCA Scan details</summary><p>\n';
