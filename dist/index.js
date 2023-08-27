@@ -20434,9 +20434,9 @@ function runAction(options) {
         if (options.workspace_automation = true) {
             core.info('workspace_autoamtion is set to ture, will run workspace_autoamtion');
             //set the platform region and base API url
-            const API_ID = process_1.env.VID;
+            const API_ID = process.env.VID;
             const cleanedID = (_a = API_ID === null || API_ID === void 0 ? void 0 : API_ID.replace('vera01ei-', '')) !== null && _a !== void 0 ? _a : '';
-            const API_KEY = process_1.env.VKEY;
+            const API_KEY = process.env.VKEY;
             const cleanedKEY = (_b = API_KEY === null || API_KEY === void 0 ? void 0 : API_KEY.replace('vera01es-', '')) !== null && _b !== void 0 ? _b : '';
             const REPO_NAME = (_c = process_1.env.GITHUB_REPOSITORY) !== null && _c !== void 0 ? _c : '';
             console.log('API_ID: ' + API_ID);

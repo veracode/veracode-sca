@@ -28,9 +28,9 @@ export async function runAction (options: Options)  {
         core.info('workspace_autoamtion is set to ture, will run workspace_autoamtion');
 
         //set the platform region and base API url
-        const API_ID = env.VID;
+        const API_ID = process.env.VID;
         const cleanedID = API_ID?.replace('vera01ei-','') ?? '';
-        const API_KEY = env.VKEY;
+        const API_KEY = process.env.VKEY;
         const cleanedKEY = API_KEY?.replace('vera01es-','') ?? '';
         const REPO_NAME = env.GITHUB_REPOSITORY ?? '';
 
