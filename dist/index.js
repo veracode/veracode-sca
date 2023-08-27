@@ -19884,9 +19884,9 @@ function generateHeader(url, method, host, id, key) {
     var timestamp = (new Date().getTime()).toString();
     var nonce = crypto_1.default.randomBytes(16).toString("hex");
     // calculate signature
-    var hashedNonce = hmac256(getByteArray(nonce), getByteArray(key), 'buffer');
-    var hashedTimestamp = hmac256(timestamp, hashedNonce, 'buffer');
-    var hashedVerStr = hmac256(verStr, hashedTimestamp, 'buffer');
+    var hashedNonce = hmac256(getByteArray(nonce), getByteArray(key), '');
+    var hashedTimestamp = hmac256(timestamp, hashedNonce, '');
+    var hashedVerStr = hmac256(verStr, hashedTimestamp, '');
     var signature = hmac256(data, hashedVerStr, 'hex');
     return `${preFix} id=${id},ts=${timestamp},nonce=${nonce},sig=${signature}`;
 }
