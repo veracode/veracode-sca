@@ -19880,13 +19880,12 @@ var getByteArray = (hex) => {
 };
 function generateHeader(url, method, host, id, key) {
     var data = `id=${id}&host=${host}&url=${url}&method=${method}`;
-    console.log('DATA: ' + data);
     var timestamp = (new Date().getTime()).toString();
     var nonce = crypto_1.default.randomBytes(16).toString("hex");
     // calculate signature
-    var hashedNonce = hmac256(getByteArray(nonce), getByteArray(key), '');
-    var hashedTimestamp = hmac256(timestamp, hashedNonce, '');
-    var hashedVerStr = hmac256(verStr, hashedTimestamp, '');
+    var hashedNonce = hmac256(getByteArray(nonce), getByteArray(key), null);
+    var hashedTimestamp = hmac256(timestamp, hashedNonce, null);
+    var hashedVerStr = hmac256(verStr, hashedTimestamp, null);
     var signature = hmac256(data, hashedVerStr, 'hex');
     return `${preFix} id=${id},ts=${timestamp},nonce=${nonce},sig=${signature}`;
 }
@@ -20429,7 +20428,7 @@ const cleanCollectors = (inputArr) => {
     return allowed;
 };
 function runAction(options) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
         //check if workspace_autoamtion is set to true
         core.info('Check if workspace_autoamtion is set to true');
@@ -20439,14 +20438,7 @@ function runAction(options) {
             const cleanedID = (_b = (_a = options.VID) === null || _a === void 0 ? void 0 : _a.replace('vera01ei-', '')) !== null && _b !== void 0 ? _b : '';
             const cleanedKEY = (_d = (_c = options.VKEY) === null || _c === void 0 ? void 0 : _c.replace('vera01es-', '')) !== null && _d !== void 0 ? _d : '';
             const REPO_NAME = (_e = process_1.env.GITHUB_REPOSITORY) !== null && _e !== void 0 ? _e : '';
-            const SRCCLR_API_TOKEN = (_f = process_1.env.SRCCLR_API_TOKEN) !== null && _f !== void 0 ? _f : '';
-            const myEnv = process_1.env;
-            console.log('API_ID: ' + options.VID);
-            console.log('API_KEY: ' + options.VKEY);
-            console.log('REPO_NAME: ' + REPO_NAME);
-            console.log('cleanedID: ' + cleanedID);
-            console.log('cleanedKEY: ' + cleanedKEY);
-            if ((_g = options.VID) === null || _g === void 0 ? void 0 : _g.startsWith('vera01ei-')) {
+            if ((_f = options.VID) === null || _f === void 0 ? void 0 : _f.startsWith('vera01ei-')) {
                 core.info('Platform is ER');
                 var API_BASE_URL = 'https://api.veracode.eu';
             }
@@ -20526,7 +20518,7 @@ function runAction(options) {
                     core.error(`stderr: ${data}`);
                 });
                 execution.on('close', (code) => __awaiter(this, void 0, void 0, function* () {
-                    var _h;
+                    var _g;
                     core.info('Create issue "true" - on close');
                     if (core.isDebug()) {
                         core.info(output);
@@ -20541,7 +20533,7 @@ function runAction(options) {
                         const context = github.context;
                         const repository = process.env.GITHUB_REPOSITORY;
                         const repo = repository.split("/");
-                        const commentID = (_h = context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.number;
+                        const commentID = (_g = context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.number;
                         let pr_header = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>';
                         summary_message = `Veracode SCA Scan finished with exit code: ${code}. Please review created and linked issues`;
                         try {
@@ -20600,7 +20592,7 @@ function runAction(options) {
                     core.error(`stderr: ${data}`);
                 });
                 execution.on('close', (code) => __awaiter(this, void 0, void 0, function* () {
-                    var _j;
+                    var _h;
                     //core.info(output);
                     core.info(`Scan finished with exit code:  ${code}`);
                     //write output to file
@@ -20631,7 +20623,7 @@ function runAction(options) {
                         const context = github.context;
                         const repository = process.env.GITHUB_REPOSITORY;
                         const repo = repository.split("/");
-                        const commentID = (_j = context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.number;
+                        const commentID = (_h = context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.number;
                         let commentBody = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>';
                         commentBody += "Veraocde SCA Scan failed with exit code " + code + "\n";
                         commentBody += '\n<details><summary>Veracode SCA Scan details</summary><p>\n';

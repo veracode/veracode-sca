@@ -27,14 +27,13 @@ var getByteArray = (hex:any) => {
 export function generateHeader(url:string, method:string, host:string, id:string, key:string) {
 
 	var data = `id=${id}&host=${host}&url=${url}&method=${method}`;
-	console.log('DATA: '+data);
 	var timestamp = (new Date().getTime()).toString();
 	var nonce = crypto.randomBytes(16).toString("hex");
 
 	// calculate signature
-	var hashedNonce = hmac256(getByteArray(nonce), getByteArray(key), '');
-	var hashedTimestamp = hmac256(timestamp, hashedNonce, '');
-	var hashedVerStr = hmac256(verStr, hashedTimestamp, '');
+	var hashedNonce = hmac256(getByteArray(nonce), getByteArray(key), null)
+	var hashedTimestamp = hmac256(timestamp, hashedNonce, null)
+	var hashedVerStr = hmac256(verStr, hashedTimestamp, null);
 	var signature = hmac256(data, hashedVerStr, 'hex');
 
 	return `${preFix} id=${id},ts=${timestamp},nonce=${nonce},sig=${signature}`;

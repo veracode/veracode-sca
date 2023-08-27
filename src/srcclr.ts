@@ -31,14 +31,6 @@ export async function runAction (options: Options)  {
         const cleanedID = options.VID?.replace('vera01ei-','') ?? '';
         const cleanedKEY = options.VKEY?.replace('vera01es-','') ?? '';
         const REPO_NAME = env.GITHUB_REPOSITORY ?? '';
-        const SRCCLR_API_TOKEN = env.SRCCLR_API_TOKEN ?? '';
-        const myEnv = env;
-
-        console.log('API_ID: '+options.VID)
-        console.log('API_KEY: '+options.VKEY)
-        console.log('REPO_NAME: '+REPO_NAME)
-        console.log('cleanedID: '+cleanedID)
-        console.log('cleanedKEY: '+cleanedKEY)
 
         if ( options.VID?.startsWith('vera01ei-') ) {
             core.info('Platform is ER');
