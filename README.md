@@ -10,7 +10,7 @@ If the action runs on a pull request, it will either add a comment with the scan
   
 ## Inputs
 :exclamation: You will need to provide `SRCCLR_API_TOKEN` as an environment variable (see examples below).  
-This is only required if `workspace-autoamtion`` is set to false. If workspace-automation is set to true, the workspace, project and token will be automatically generated or regenerated to run the scan. The workspace will be called `github-orgname-reponame` and the project will be called `github-orgname-reponame`.
+This is only required if `workspace-autoamtion` is set to false. If workspace-automation is set to true, the workspace, project and token will be automatically generated or regenerated to run the scan. The workspace will be called `github-orgname-reponame` and the project will be called `github-orgname-reponame`.
 
 :exclamation: If using an org-level agent, you will need to provide `SRCCLR_WORKSPACE_SLUG` as an environment variable.
   
