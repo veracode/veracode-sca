@@ -19,7 +19,7 @@ const options: Options = {
     "no-graphs": core.getBooleanInput('no-graphs'),
     recursive: core.getBooleanInput('recursive'),
     "skip-collectors": core.getInput('skip-collectors').split(','),
-    workspace_automation: core.getBooleanInput('workspace_autoamtion'),
+    workspace_automation: core.getBooleanInput('workspace_automation'),
     
 }
 

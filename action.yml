@@ -12,6 +12,7 @@ inputs:
   workspace_automation:
     description: "Workspace automation ti autocreate workspaces and remove the need to setup a token upfront"
     required: false
+    default: "false"
   quick:
     description: "Run the SRCCLR with the `--quick` options"
     required: false
