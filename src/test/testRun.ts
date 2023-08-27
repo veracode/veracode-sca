@@ -18,7 +18,9 @@ const options: Options = {
     recursive:false,
     "skip-vms":false,
     "no-graphs":false,
-    workspace_automation: false
+    workspace_automation: false,
+    VID: '',
+    VKEY: ''
 }
 
 runAction(options);

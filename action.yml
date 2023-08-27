@@ -13,6 +13,12 @@ inputs:
     description: "Workspace automation ti autocreate workspaces and remove the need to setup a token upfront"
     required: false
     default: "false"
+  VID:
+    description: "Veracode API ID - only required if workspace_automation is set to true"
+    required: false
+  VKEY:
+    description: "Veracode API Key - only required if workspace_automation is set to true"
+    required: false
   quick:
     description: "Run the SRCCLR with the `--quick` options"
     required: false

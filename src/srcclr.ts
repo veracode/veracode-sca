@@ -28,23 +28,19 @@ export async function runAction (options: Options)  {
         core.info('workspace_autoamtion is set to ture, will run workspace_autoamtion');
 
         //set the platform region and base API url
-        const API_ID = env.VID;
-        const cleanedID = API_ID?.replace('vera01ei-','') ?? '';
-        const API_KEY = env.VKEY;
-        const cleanedKEY = API_KEY?.replace('vera01es-','') ?? '';
+        const cleanedID = options.VID?.replace('vera01ei-','') ?? '';
+        const cleanedKEY = options.VKEY?.replace('vera01es-','') ?? '';
         const REPO_NAME = env.GITHUB_REPOSITORY ?? '';
         const SRCCLR_API_TOKEN = env.SRCCLR_API_TOKEN ?? '';
         const myEnv = env;
 
-        console.log('API_ID: '+API_ID)
-        console.log('API_KEY: '+API_KEY)
+        console.log('API_ID: '+options.VID)
+        console.log('API_KEY: '+options.VKEY)
         console.log('REPO_NAME: '+REPO_NAME)
         console.log('cleanedID: '+cleanedID)
         console.log('cleanedKEY: '+cleanedKEY)
-        console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
-        console.log('myEnv: '+JSON.stringify(myEnv))
 
-        if ( API_ID?.startsWith('vera01ei-') ) {
+        if ( options.VID?.startsWith('vera01ei-') ) {
             core.info('Platform is ER');
             var API_BASE_URL = 'https://api.veracode.eu';
         }

@@ -13,7 +13,9 @@ export interface Options {
     "skip-vms":boolean,
     "no-graphs":boolean,
     "skip-collectors": Array<string>,
-    workspace_automation: boolean
+    workspace_automation: boolean,
+    VID: string,
+    VKEY: string
 }
 
 

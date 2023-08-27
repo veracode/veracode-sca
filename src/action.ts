@@ -20,7 +20,8 @@ const options: Options = {
     recursive: core.getBooleanInput('recursive'),
     "skip-collectors": core.getInput('skip-collectors').split(','),
     workspace_automation: core.getBooleanInput('workspace_automation'),
-    
+    VID: core.getInput('VID'),
+    VKEY: core.getInput('VKEY')
 }
 
 runAction(options);
