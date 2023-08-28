@@ -20453,9 +20453,9 @@ function runAction(options) {
                 },
                 url: 'https://' + API_BASE_URL + path
             });
-            var workspaces = checkWorkspace.data.page;
+            var workspaces = checkWorkspace.data;
             console.log(JSON.stringify(workspaces));
-            if (workspaces.total_elemets == 0) {
+            if (workspaces.page.total_elemets == 0) {
                 //worespace doesn't exists, create it
                 console.log('workspace doesn\'t exists and needs to be created');
                 var path = '/srcclr/v3/workspaces';
@@ -20472,10 +20472,10 @@ function runAction(options) {
             else {
                 //workspace exists, get the workspace ID
                 console.log('workspace already exists, get the workspace ID');
-                var workspaceLenght = workspaces.total_elements;
+                var workspaceLenght = workspaces.page.total_elements;
                 for (var i = 0; i < workspaceLenght; i++) {
-                    if (checkWorkspace.data._embedded.workspace[i].name == REPO_NAME) {
-                        var workspaceID = checkWorkspace.data._embedded.workspace[i].id;
+                    if (workspaces._embedded.workspace[i].name == REPO_NAME) {
+                        var workspaceID = workspaces._embedded.workspace[i].id;
                     }
                 }
                 console.log('workspace ID: ' + workspaceID);
