@@ -20743,8 +20743,8 @@ function workspace_automation(options) {
                 },
                 url: 'https://' + API_BASE_URL + path
             });
-            var workspaceLenght = workspacesResults.page.total_elements;
-            var workspaceID = workspacesResults._embedded.workspaces[0].id;
+            var workspaceLenght = checkWorkspace.data.page.total_elements;
+            var workspaceID = checkWorkspace.data._embedded.workspaces[0].id;
         }
         else {
             //workspace exists, get the workspace ID
