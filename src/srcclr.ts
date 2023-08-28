@@ -28,7 +28,7 @@ export async function runAction (options: Options)  {
         var SRCCLR_API_TOKEN = await workspace_autoamtion.workspace_automation(options);
         console.log('SRCCLR_API_TOKEN @ srcclr.ts: '+SRCCLR_API_TOKEN)
         core.info('Starting the scan')
-        var command = 'export SRCCLR_API-TOKEN='+SRCCLR_API_TOKEN
+        var command = 'export SRCCLR_API_TOKEN='+SRCCLR_API_TOKEN
         const execution = spawn('sh',['-c',command],{
             stdio:"pipe",
             shell:false
