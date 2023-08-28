@@ -20445,8 +20445,7 @@ function runAction(options) {
                 var API_BASE_URL = 'api.veracode.com';
             }
             //check if workspace exists
-            //var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D='+encodeURIComponent(REPO_NAME)
-            var path = '/appsec/v1/applications?size=100&page=0&name=' + encodeURIComponent(REPO_NAME);
+            var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D=' + encodeURIComponent(REPO_NAME);
             console.log('PATH: ' + path);
             var checkWorkspace = yield axios_1.default.request({
                 method: 'GET',
