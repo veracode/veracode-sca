@@ -20455,7 +20455,7 @@ function runAction(options) {
             });
             var workspaces = checkWorkspace.data;
             console.log(JSON.stringify(workspaces));
-            if (workspaces.page.total_elemets == 0) {
+            if (workspaces.page.total_elemets == "0") {
                 //worespace doesn't exists, create it
                 console.log('workspace doesn\'t exists and needs to be created');
                 var path = '/srcclr/v3/workspaces';
