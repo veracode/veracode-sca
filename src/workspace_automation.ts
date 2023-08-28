@@ -32,7 +32,7 @@ export async function workspace_automation(options:any) {
 
           if ( workspacesResults.page.total_elements == 0 ){
             //worespace doesn't exists, create it
-            console.log('workspace doesn\'t exists and needs to be created');
+            core.info('workspace doesn\'t exists and needs to be created');
 
             var path = '/srcclr/v3/workspaces'
             var data = '{"name":"'+REPO_NAME+'"}'
@@ -48,14 +48,14 @@ export async function workspace_automation(options:any) {
           }
           else {
             //workspace exists, get the workspace ID
-            console.log('workspace already exists, get the workspace ID');
+            core.info('workspace already exists, get the workspace ID');
             var workspaceLenght = workspacesResults.page.total_elements
             for ( var i = 0; i < workspaceLenght; i++ ){
                 if ( workspacesResults._embedded.workspaces[i].name == REPO_NAME ){
                     var workspaceID = workspacesResults._embedded.workspaces[i].id
                 }
             }
-            console.log('workspace ID: '+workspaceID)
+            core.info('workspace ID: '+workspaceID)
         }
 
         //check if agent exists
@@ -72,7 +72,7 @@ export async function workspace_automation(options:any) {
 
         if ( workspacesIDResults.hasOwnProperty('_embedded') ){
             //there are agents
-            console.log('there are agents, check if correct agent exists');
+            core.info('there are agents, check if correct agent exists');
             var agentsLenght = workspacesIDResults._embedded.agents.length
             for ( var i = 0; i < agentsLenght; i++ ){
                 if ( workspacesIDResults._embedded.agents[i].name == 'veracode-sca-action' ){
@@ -80,7 +80,7 @@ export async function workspace_automation(options:any) {
                 }
             }
             if ( agentID != undefined ){
-                console.log('agent ID: '+agentID+' - for agent with name "veracode-sca-action" - need to regenerate token')
+                core.info('agent ID: '+agentID+' - for agent with name "veracode-sca-action" - need to regenerate token')
                 var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents/'+agentID+'/token:regenerate'
                 var createAgent = await Axios.request({
                     method: 'POST',
@@ -92,11 +92,10 @@ export async function workspace_automation(options:any) {
                 });
                 var SRCCLR_API_TOKEN = createAgent.data.access_token
                 return SRCCLR_API_TOKEN
-                console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
 
             }
             else {
-                console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
+                core.info('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
                 var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents'
                 var data = '{"agent_type": "CLI","name": "veracode-sca-action"}'
                 var createAgent = await Axios.request({
@@ -110,12 +109,11 @@ export async function workspace_automation(options:any) {
                 });
                 var SRCCLR_API_TOKEN = createAgent.data.token.access_token
                 return SRCCLR_API_TOKEN
-                console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
             }
         }
         else {
             //there are no agents
-            console.log('there are no agents, create one');
+            core.info('there are no agents, create one');
             var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents'
             var data = '{"agent_type": "CLI","name": "veracode-sca-action"}'
             var createAgent = await Axios.request({
@@ -129,6 +127,5 @@ export async function workspace_automation(options:any) {
             });
             var SRCCLR_API_TOKEN = createAgent.data.token.access_token
             return SRCCLR_API_TOKEN
-            console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
         }
     }

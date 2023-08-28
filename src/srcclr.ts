@@ -27,19 +27,6 @@ export async function runAction (options: Options)  {
     if ( options.workspace_automation = true ) {
         core.info('workspace_automation is set to ture, will run workspace automation');
         var SRCCLR_API_TOKEN = await workspace_autoamtion.workspace_automation(options);
-        core.info('Exporting Token to environment')
-        var command = 'export SRCCLR_API_TOKEN='+SRCCLR_API_TOKEN
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error executing command: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`Command stderr: ${stderr}`);
-                return;
-            }
-            console.log(`Command output:\n${stdout}`);
-        });
     }
     else {
         core.info('workspace_autoamtion is set to false, will not run workspace_autoamtion');
