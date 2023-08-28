@@ -56,7 +56,7 @@ export async function workspace_automation(options:any) {
             });
             var workspaceLenght = checkWorkspace.data.page.total_elements
             var workspaceID = checkWorkspace.data._embedded.workspaces[0].id
-
+            core.info('workspace ID: '+workspaceID)
           }
           else {
             //workspace exists, get the workspace ID
@@ -102,6 +102,7 @@ export async function workspace_automation(options:any) {
                     },
                     url: 'https://'+API_BASE_URL+path
                 });
+                core.info('Agent token regenerated')
                 var SRCCLR_API_TOKEN = createAgent.data.access_token
                 return SRCCLR_API_TOKEN
 
@@ -119,6 +120,7 @@ export async function workspace_automation(options:any) {
                     data,
                     url: 'https://'+API_BASE_URL+path
                 });
+                core.info('Agent created')
                 var SRCCLR_API_TOKEN = createAgent.data.token.access_token
                 return SRCCLR_API_TOKEN
             }
@@ -137,6 +139,7 @@ export async function workspace_automation(options:any) {
                 data,
                  url: 'https://'+API_BASE_URL+path
             });
+            core.info('Agent created')
             var SRCCLR_API_TOKEN = createAgent.data.token.access_token
             return SRCCLR_API_TOKEN
         }
