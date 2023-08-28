@@ -20476,7 +20476,7 @@ function runAction(options) {
                 var workspaceLenght = workspacesResults.page.total_elements;
                 for (var i = 0; i < workspaceLenght; i++) {
                     if (workspacesResults._embedded.workspaces[i].name == REPO_NAME) {
-                        var workspaceID = workspacesResults._embedded.workspace[i].id;
+                        var workspaceID = workspacesResults._embedded.workspaces[i].id;
                     }
                 }
                 console.log('workspace ID: ' + workspaceID);
