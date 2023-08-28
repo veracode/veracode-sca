@@ -120,8 +120,8 @@ export async function runAction (options: Options)  {
                     data,
                     url: 'https://'+API_BASE_URL+path
                 });
-                var accessToken = createAgent.data.token.access_token
-                console.log('access token: '+accessToken)
+                var SRCCLR_API_TOKEN = createAgent.data.token.access_token
+                console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
             }
         }
         else {
@@ -138,8 +138,8 @@ export async function runAction (options: Options)  {
                 data,
                  url: 'https://'+API_BASE_URL+path
             });
-            var accessToken = createAgent.data.token.access_token
-            console.log('access token: '+accessToken)
+            var SRCCLR_API_TOKEN = createAgent.data.token.access_token
+            console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
         }
 
 
