@@ -20463,7 +20463,13 @@ function runAction(options) {
             const skipVMS = options["skip-vms"];
             const commandOutput = options.createIssues ? `--json=${index_1.SCA_OUTPUT_FILE}` : '';
             extraCommands = `${extraCommands}${options.recursive ? '--recursive ' : ''}${options.quick ? '--quick ' : ''}${options.allowDirty ? '--allow-dirty ' : ''}${options.updateAdvisor ? '--update-advisor ' : ''}${skipVMS ? '--skip-vms ' : ''}${noGraphs ? '--no-graphs ' : ''}${options.debug ? '--debug ' : ''}${skipCollectorsAttr}`;
-            const command = `curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan ${extraCommands} ${commandOutput}`;
+            var command = '';
+            if (options.workspace_automation = true) {
+                var command = `export SRCCLR_API_TOKEN=${SRCCLR_API_TOKEN} && curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan ${extraCommands} ${commandOutput}`;
+            }
+            else {
+                var command = `curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan ${extraCommands} ${commandOutput}`;
+            }
             core.info(command);
             if (options.createIssues) {
                 core.info('Starting the scan');
