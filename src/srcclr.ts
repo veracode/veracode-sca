@@ -27,6 +27,16 @@ export async function runAction (options: Options)  {
         core.info('workspace_automation is set to ture, will run workspace automation');
         var SRCCLR_API_TOKEN = await workspace_autoamtion.workspace_automation(options);
         console.log('SRCCLR_API_TOKEN @ srcclr.ts: '+SRCCLR_API_TOKEN)
+        core.info('Starting the scan')
+        var command = 'export SRCCLR_API-TOKEN='+SRCCLR_API_TOKEN
+        const execution = spawn('sh',['-c',command],{
+            stdio:"pipe",
+            shell:false
+        });
+          
+        execution.on('error', (data) => {
+            core.error(data);
+        })
     }
     else {
         core.info('workspace_autoamtion is set to false, will not run workspace_autoamtion');
