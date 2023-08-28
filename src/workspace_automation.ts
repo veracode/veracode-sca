@@ -91,6 +91,7 @@ export async function workspace_automation(options:any) {
                     url: 'https://'+API_BASE_URL+path
                 });
                 var SRCCLR_API_TOKEN = createAgent.data.access_token
+                return SRCCLR_API_TOKEN
                 console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
 
             }
@@ -108,6 +109,7 @@ export async function workspace_automation(options:any) {
                     url: 'https://'+API_BASE_URL+path
                 });
                 var SRCCLR_API_TOKEN = createAgent.data.token.access_token
+                return SRCCLR_API_TOKEN
                 console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
             }
         }
@@ -126,6 +128,7 @@ export async function workspace_automation(options:any) {
                  url: 'https://'+API_BASE_URL+path
             });
             var SRCCLR_API_TOKEN = createAgent.data.token.access_token
+            return SRCCLR_API_TOKEN
             console.log('SRCCLR_API_TOKEN: '+SRCCLR_API_TOKEN)
         }
     }

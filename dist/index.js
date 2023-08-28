@@ -20426,7 +20426,8 @@ function runAction(options) {
         core.info('Check if workspace_automation is set to true');
         if (options.workspace_automation = true) {
             core.info('workspace_automation is set to ture, will run workspace automation');
-            workspace_autoamtion.workspace_automation(options);
+            var SRCCLR_API_TOKEN = yield workspace_autoamtion.workspace_automation(options);
+            console.log('SRCCLR_API_TOKEN @ srcclr.ts: ' + SRCCLR_API_TOKEN);
         }
         else {
             core.info('workspace_autoamtion is set to false, will not run workspace_autoamtion');
@@ -20771,6 +20772,7 @@ function workspace_automation(options) {
                     url: 'https://' + API_BASE_URL + path
                 });
                 var SRCCLR_API_TOKEN = createAgent.data.access_token;
+                return SRCCLR_API_TOKEN;
                 console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
             }
             else {
@@ -20787,6 +20789,7 @@ function workspace_automation(options) {
                     url: 'https://' + API_BASE_URL + path
                 });
                 var SRCCLR_API_TOKEN = createAgent.data.token.access_token;
+                return SRCCLR_API_TOKEN;
                 console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
             }
         }
@@ -20805,6 +20808,7 @@ function workspace_automation(options) {
                 url: 'https://' + API_BASE_URL + path
             });
             var SRCCLR_API_TOKEN = createAgent.data.token.access_token;
+            return SRCCLR_API_TOKEN;
             console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
         }
     });
