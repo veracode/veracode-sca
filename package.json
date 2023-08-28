@@ -34,6 +34,7 @@
     "@actions/artifact": "^1.1.1",
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
-    "axios": "^1.5.0"
+    "axios": "^1.5.0",
+    "sjcl": "^1.0.8"
   }
 }
