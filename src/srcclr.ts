@@ -100,17 +100,17 @@ export async function runAction (options: Options)  {
             console.log('there are agents, check if correct agent exists');
             var agentsLenght = workspacesIDResults._embedded.agents.length
             for ( var i = 0; i < agentsLenght; i++ ){
-                if ( workspacesIDResults._embedded.agents[i].name == 'Veracode-GitHub-Action' ){
+                if ( workspacesIDResults._embedded.agents[i].name == 'veracode-sca-action' ){
                     var agentID = workspacesIDResults._embedded.agents[i].id
                 }
             }
             if ( agentID != undefined ){
-                console.log('agent ID: '+agentID+' - for agent with name "Veracode-GitHub-Action"')
+                console.log('agent ID: '+agentID+' - for agent with name "veracode-sca-action"')
             }
             else {
                 console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
                 var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents'
-                var data = '{"agent_type": "CLI","name": "veracode-action"}'
+                var data = '{"agent_type": "CLI","name": "veracode-sca-action"}'
                 var createAgent = await Axios.request({
                     method: 'POST',
                     headers:{
@@ -120,13 +120,15 @@ export async function runAction (options: Options)  {
                     data,
                     url: 'https://'+API_BASE_URL+path
                 });
+                var accessToken = createAgent.data.token.access_token
+                console.log('access token: '+accessToken)
             }
         }
         else {
             //there are no agents
             console.log('there are no agents, create one');
             var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents'
-            var data = '{"agent_type": "CLI","name": "Veracode-GitHub-Action"}'
+            var data = '{"agent_type": "CLI","name": "veracode-sca-action"}'
             var createAgent = await Axios.request({
                 method: 'POST',
                 headers:{
@@ -136,6 +138,8 @@ export async function runAction (options: Options)  {
                 data,
                  url: 'https://'+API_BASE_URL+path
             });
+            var accessToken = createAgent.data.token.access_token
+            console.log('access token: '+accessToken)
         }
 
 
