@@ -98,7 +98,7 @@ export async function runAction (options: Options)  {
         if ( workspacesIDResults.hasOwnProperty('_embedded') ){
             //there are agents
             console.log('there are agents, check if agent exists');
-            var agentsLenght = workspacesIDResults.page.total_elements
+            var agentsLenght = workspacesIDResults.embedded.agents.length
             for ( var i = 0; i < agentsLenght; i++ ){
                 if ( workspacesIDResults._embedded.agents[i].name == 'Veracode GitHub Action' ){
                     var agentID = workspacesIDResults._embedded.agents[i].id
