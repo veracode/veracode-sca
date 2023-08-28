@@ -20438,11 +20438,11 @@ function runAction(options) {
             const REPO_NAME = (_e = process_1.env.GITHUB_REPOSITORY) !== null && _e !== void 0 ? _e : '';
             if ((_f = options.VID) === null || _f === void 0 ? void 0 : _f.startsWith('vera01ei-')) {
                 core.info('Platform is ER');
-                var API_BASE_URL = 'https://api.veracode.eu';
+                var API_BASE_URL = 'api.veracode.eu';
             }
             else {
                 core.info('Platform is US');
-                var API_BASE_URL = 'https://api.veracode.com';
+                var API_BASE_URL = 'api.veracode.com';
             }
             //check if workspace exists
             //var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D='+encodeURIComponent(REPO_NAME)
@@ -20453,7 +20453,7 @@ function runAction(options) {
                 headers: {
                     'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
                 },
-                url: API_BASE_URL + path
+                url: 'https://' + API_BASE_URL + path
             });
             var workspaces = checkWorkspace.data._embedded.workspaces;
             console.log(JSON.stringify(workspaces));

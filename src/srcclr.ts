@@ -34,11 +34,11 @@ export async function runAction (options: Options)  {
 
         if ( options.VID?.startsWith('vera01ei-') ) {
             core.info('Platform is ER');
-            var API_BASE_URL = 'https://api.veracode.eu';
+            var API_BASE_URL = 'api.veracode.eu';
         }
         else {
             core.info('Platform is US');
-            var API_BASE_URL = 'https://api.veracode.com';
+            var API_BASE_URL = 'api.veracode.com';
         }
 
         //check if workspace exists
@@ -50,7 +50,7 @@ export async function runAction (options: Options)  {
             headers:{
                 'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
             },
-            url: API_BASE_URL+path
+            url: 'https://'+API_BASE_URL+path
           });
           
           var workspaces = checkWorkspace.data._embedded.workspaces
