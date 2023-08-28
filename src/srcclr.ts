@@ -52,7 +52,7 @@ export async function runAction (options: Options)  {
           });
           
           var workspacesResults = checkWorkspace.data
-          console.log(JSON.stringify(workspacesResults))
+          //console.log(JSON.stringify(workspacesResults))
 
           if ( workspacesResults.page.total_elements == 0 ){
             //worespace doesn't exists, create it

@@ -20454,7 +20454,7 @@ function runAction(options) {
                 url: 'https://' + API_BASE_URL + path
             });
             var workspacesResults = checkWorkspace.data;
-            console.log(JSON.stringify(workspacesResults));
+            //console.log(JSON.stringify(workspacesResults))
             if (workspacesResults.page.total_elements == 0) {
                 //worespace doesn't exists, create it
                 console.log('workspace doesn\'t exists and needs to be created');
