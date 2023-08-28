@@ -20494,7 +20494,7 @@ function runAction(options) {
             console.log(JSON.stringify(workspacesIDResults));
             if (workspacesIDResults.hasOwnProperty('_embedded')) {
                 //there are agents
-                console.log('there are agents, check if agent exists');
+                console.log('there are agents, check if correct agent exists');
                 var agentsLenght = workspacesIDResults._embedded.agents.length;
                 for (var i = 0; i < agentsLenght; i++) {
                     if (workspacesIDResults._embedded.agents[i].name == 'Veracode-GitHub-Action') {
@@ -20507,7 +20507,7 @@ function runAction(options) {
                 else {
                     console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
                     var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
-                    var data = '{"agent_type":"CLI","name":"Veracoode-GitHub-Action"}';
+                    var data = '{"agent_type": "CLI","name": "Veracode-GitHub-Action"}';
                     var createAgent = yield axios_1.default.request({
                         method: 'POST',
                         headers: {
@@ -20523,7 +20523,7 @@ function runAction(options) {
                 //there are no agents
                 console.log('there are no agents, create one');
                 var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
-                var data = '{"agetn_type":"CLI","name":"Veracoode GitHub Action"}';
+                var data = '{"agent_type": "CLI","name": "Veracode-GitHub-Action"}';
                 var createAgent = yield axios_1.default.request({
                     method: 'POST',
                     headers: {
