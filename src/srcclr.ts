@@ -48,7 +48,7 @@ export async function runAction (options: Options)  {
         var checkWorkspace = await Axios.request({
             method: 'GET',
             headers:{
-                'Authorization': auth.calculateAuthorizationHeader(cleanedID, cleanedKEY, API_BASE_URL, path, 'GET'),
+                'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
             },
             url: API_BASE_URL+path
           });
