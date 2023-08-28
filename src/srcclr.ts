@@ -51,10 +51,10 @@ export async function runAction (options: Options)  {
             url: 'https://'+API_BASE_URL+path
           });
           
-          var workspaces = checkWorkspace.data
-          console.log(JSON.stringify(workspaces))
+          var workspacesResults = checkWorkspace.data
+          console.log(JSON.stringify(workspacesResults))
 
-          if ( workspaces.page.total_elements == 0 ){
+          if ( workspacesResults.page.total_elements == 0 ){
             //worespace doesn't exists, create it
             console.log('workspace doesn\'t exists and needs to be created');
 
@@ -73,10 +73,10 @@ export async function runAction (options: Options)  {
           else {
             //workspace exists, get the workspace ID
             console.log('workspace already exists, get the workspace ID');
-            var workspaceLenght = workspaces.page.total_elements
+            var workspaceLenght = workspacesResults.page.total_elements
             for ( var i = 0; i < workspaceLenght; i++ ){
-                if ( workspaces._embedded.workspaces[i].name == REPO_NAME ){
-                    var workspaceID = workspaces._embedded.workspace[i].id
+                if ( workspacesResults._embedded.workspaces[i].name == REPO_NAME ){
+                    var workspaceID = workspacesResults._embedded.workspace[i].id
                 }
             }
             console.log('workspace ID: '+workspaceID)
