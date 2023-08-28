@@ -75,7 +75,7 @@ export async function runAction (options: Options)  {
             console.log('workspace already exists, get the workspace ID');
             var workspaceLenght = workspaces.page.total_elements
             for ( var i = 0; i < workspaceLenght; i++ ){
-                if ( workspaces._embedded.workspace[i].name == REPO_NAME ){
+                if ( workspaces._embedded.workspaces[i].name == REPO_NAME ){
                     var workspaceID = workspaces._embedded.workspace[i].id
                 }
             }
