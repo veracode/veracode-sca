@@ -20501,7 +20501,7 @@ function runAction(options) {
                         var agentID = workspacesIDResults._embedded.agents[i].id;
                     }
                 }
-                if (agentID != '') {
+                if (agentID != undefined) {
                     console.log('agent ID: ' + agentID + ' - for agent with name "Veracode GitHub Action"');
                 }
                 else {

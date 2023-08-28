@@ -104,7 +104,7 @@ export async function runAction (options: Options)  {
                     var agentID = workspacesIDResults._embedded.agents[i].id
                 }
             }
-            if ( agentID != '' ){
+            if ( agentID != undefined ){
                 console.log('agent ID: '+agentID+' - for agent with name "Veracode GitHub Action"')
             }
             else {
