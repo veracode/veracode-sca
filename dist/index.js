@@ -20403,19 +20403,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.runAction = void 0;
 const child_process_1 = __nccwpck_require__(2081);
 const core = __importStar(__nccwpck_require__(5127));
 const index_1 = __nccwpck_require__(4925);
 const github = __importStar(__nccwpck_require__(3134));
-const process_1 = __nccwpck_require__(7282);
 const fs_1 = __nccwpck_require__(7147);
-const auth = __importStar(__nccwpck_require__(6980));
-const axios_1 = __importDefault(__nccwpck_require__(2223));
+const workspace_autoamtion = __importStar(__nccwpck_require__(9306));
 const cleanCollectors = (inputArr) => {
     let allowed = [];
     for (var input of inputArr) {
@@ -20426,145 +20421,12 @@ const cleanCollectors = (inputArr) => {
     return allowed;
 };
 function runAction(options) {
-    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
         //check if workspace_autoamtion is set to true
         core.info('Check if workspace_automation is set to true');
         if (options.workspace_automation = true) {
             core.info('workspace_automation is set to ture, will run workspace automation');
-            //set the platform region and base API url
-            const cleanedID = (_b = (_a = options.VID) === null || _a === void 0 ? void 0 : _a.replace('vera01ei-', '')) !== null && _b !== void 0 ? _b : '';
-            const cleanedKEY = (_d = (_c = options.VKEY) === null || _c === void 0 ? void 0 : _c.replace('vera01es-', '')) !== null && _d !== void 0 ? _d : '';
-            const REPO_NAME = (_e = process_1.env.GITHUB_REPOSITORY) !== null && _e !== void 0 ? _e : '';
-            if ((_f = options.VID) === null || _f === void 0 ? void 0 : _f.startsWith('vera01ei-')) {
-                core.info('Platform is ER');
-                var API_BASE_URL = 'api.veracode.eu';
-            }
-            else {
-                core.info('Platform is US');
-                var API_BASE_URL = 'api.veracode.com';
-            }
-            //check if workspace exists
-            var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D=' + encodeURIComponent(REPO_NAME);
-            var checkWorkspace = yield axios_1.default.request({
-                method: 'GET',
-                headers: {
-                    'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
-                },
-                url: 'https://' + API_BASE_URL + path
-            });
-            var workspacesResults = checkWorkspace.data;
-            //console.log(JSON.stringify(workspacesResults))
-            if (workspacesResults.page.total_elements == 0) {
-                //worespace doesn't exists, create it
-                console.log('workspace doesn\'t exists and needs to be created');
-                var path = '/srcclr/v3/workspaces';
-                var data = '{"name":"' + REPO_NAME + '"}';
-                var checkWorkspace = yield axios_1.default.request({
-                    method: 'POST',
-                    headers: {
-                        'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
-                        'Content-Type': 'application/json',
-                    },
-                    data,
-                    url: 'https://' + API_BASE_URL + path
-                });
-            }
-            else {
-                //workspace exists, get the workspace ID
-                console.log('workspace already exists, get the workspace ID');
-                var workspaceLenght = workspacesResults.page.total_elements;
-                for (var i = 0; i < workspaceLenght; i++) {
-                    if (workspacesResults._embedded.workspaces[i].name == REPO_NAME) {
-                        var workspaceID = workspacesResults._embedded.workspaces[i].id;
-                    }
-                }
-                console.log('workspace ID: ' + workspaceID);
-            }
-            //check if agent exists
-            var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
-            var checkAgents = yield axios_1.default.request({
-                method: 'GET',
-                headers: {
-                    'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
-                },
-                url: 'https://' + API_BASE_URL + path
-            });
-            var workspacesIDResults = checkAgents.data;
-            console.log(JSON.stringify(workspacesIDResults));
-            if (workspacesIDResults.hasOwnProperty('_embedded')) {
-                //there are agents
-                console.log('there are agents, check if correct agent exists');
-                var agentsLenght = workspacesIDResults._embedded.agents.length;
-                for (var i = 0; i < agentsLenght; i++) {
-                    if (workspacesIDResults._embedded.agents[i].name == 'veracode-sca-action') {
-                        var agentID = workspacesIDResults._embedded.agents[i].id;
-                    }
-                }
-                if (agentID != undefined) {
-                    console.log('agent ID: ' + agentID + ' - for agent with name "veracode-sca-action" - need to regenerate token');
-                    var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents/' + agentID + '/token:regenerate';
-                    var createAgent = yield axios_1.default.request({
-                        method: 'POST',
-                        headers: {
-                            'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
-                            'Content-Type': 'application/json',
-                        },
-                        url: 'https://' + API_BASE_URL + path
-                    });
-                    var SRCCLR_API_TOKEN = createAgent.data.access_token;
-                    console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
-                }
-                else {
-                    console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
-                    var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
-                    var data = '{"agent_type": "CLI","name": "veracode-sca-action"}';
-                    var createAgent = yield axios_1.default.request({
-                        method: 'POST',
-                        headers: {
-                            'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
-                            'Content-Type': 'application/json',
-                        },
-                        data,
-                        url: 'https://' + API_BASE_URL + path
-                    });
-                    var SRCCLR_API_TOKEN = createAgent.data.token.access_token;
-                    console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
-                }
-            }
-            else {
-                //there are no agents
-                console.log('there are no agents, create one');
-                var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
-                var data = '{"agent_type": "CLI","name": "veracode-sca-action"}';
-                var createAgent = yield axios_1.default.request({
-                    method: 'POST',
-                    headers: {
-                        'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
-                        'Content-Type': 'application/json',
-                    },
-                    data,
-                    url: 'https://' + API_BASE_URL + path
-                });
-                var SRCCLR_API_TOKEN = createAgent.data.token.access_token;
-                console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
-            }
-            /*
-            
-            
-            
-                    //check if agent already exists
-                    if ( agent == null ) {
-                        core.info('agent doesn\'t exists and needs to be created');
-                        //create agent
-                    }
-                    else {
-                        core.info('agent already exists, regenerat token');
-                    }
-            
-                    //set token for the actual scan.
-            
-            */
+            workspace_autoamtion.workspace_automation(options);
         }
         else {
             core.info('workspace_autoamtion is set to false, will not run workspace_autoamtion');
@@ -20606,7 +20468,7 @@ function runAction(options) {
                     core.error(`stderr: ${data}`);
                 });
                 execution.on('close', (code) => __awaiter(this, void 0, void 0, function* () {
-                    var _g;
+                    var _a;
                     core.info('Create issue "true" - on close');
                     if (core.isDebug()) {
                         core.info(output);
@@ -20621,7 +20483,7 @@ function runAction(options) {
                         const context = github.context;
                         const repository = process.env.GITHUB_REPOSITORY;
                         const repo = repository.split("/");
-                        const commentID = (_g = context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.number;
+                        const commentID = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
                         let pr_header = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>';
                         summary_message = `Veracode SCA Scan finished with exit code: ${code}. Please review created and linked issues`;
                         try {
@@ -20680,7 +20542,7 @@ function runAction(options) {
                     core.error(`stderr: ${data}`);
                 });
                 execution.on('close', (code) => __awaiter(this, void 0, void 0, function* () {
-                    var _h;
+                    var _b;
                     //core.info(output);
                     core.info(`Scan finished with exit code:  ${code}`);
                     //write output to file
@@ -20711,7 +20573,7 @@ function runAction(options) {
                         const context = github.context;
                         const repository = process.env.GITHUB_REPOSITORY;
                         const repo = repository.split("/");
-                        const commentID = (_h = context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.number;
+                        const commentID = (_b = context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.number;
                         let commentBody = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>';
                         commentBody += "Veraocde SCA Scan failed with exit code " + code + "\n";
                         commentBody += '\n<details><summary>Veracode SCA Scan details</summary><p>\n';
@@ -20781,6 +20643,173 @@ const collectors = [
     "dll",
     "msbuilddotnet",
 ];
+
+
+/***/ }),
+
+/***/ 9306:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.workspace_automation = void 0;
+const auth = __importStar(__nccwpck_require__(6980));
+const axios_1 = __importDefault(__nccwpck_require__(2223));
+const process_1 = __nccwpck_require__(7282);
+const core = __importStar(__nccwpck_require__(5127));
+function workspace_automation(options) {
+    var _a, _b, _c, _d, _e, _f;
+    return __awaiter(this, void 0, void 0, function* () {
+        //set the platform region and base API url
+        const cleanedID = (_b = (_a = options.VID) === null || _a === void 0 ? void 0 : _a.replace('vera01ei-', '')) !== null && _b !== void 0 ? _b : '';
+        const cleanedKEY = (_d = (_c = options.VKEY) === null || _c === void 0 ? void 0 : _c.replace('vera01es-', '')) !== null && _d !== void 0 ? _d : '';
+        const REPO_NAME = (_e = process_1.env.GITHUB_REPOSITORY) !== null && _e !== void 0 ? _e : '';
+        if ((_f = options.VID) === null || _f === void 0 ? void 0 : _f.startsWith('vera01ei-')) {
+            core.info('Platform is ER');
+            var API_BASE_URL = 'api.veracode.eu';
+        }
+        else {
+            core.info('Platform is US');
+            var API_BASE_URL = 'api.veracode.com';
+        }
+        //check if workspace exists
+        var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D=' + encodeURIComponent(REPO_NAME);
+        var checkWorkspace = yield axios_1.default.request({
+            method: 'GET',
+            headers: {
+                'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
+            },
+            url: 'https://' + API_BASE_URL + path
+        });
+        var workspacesResults = checkWorkspace.data;
+        if (workspacesResults.page.total_elements == 0) {
+            //worespace doesn't exists, create it
+            console.log('workspace doesn\'t exists and needs to be created');
+            var path = '/srcclr/v3/workspaces';
+            var data = '{"name":"' + REPO_NAME + '"}';
+            var checkWorkspace = yield axios_1.default.request({
+                method: 'POST',
+                headers: {
+                    'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
+                    'Content-Type': 'application/json',
+                },
+                data,
+                url: 'https://' + API_BASE_URL + path
+            });
+        }
+        else {
+            //workspace exists, get the workspace ID
+            console.log('workspace already exists, get the workspace ID');
+            var workspaceLenght = workspacesResults.page.total_elements;
+            for (var i = 0; i < workspaceLenght; i++) {
+                if (workspacesResults._embedded.workspaces[i].name == REPO_NAME) {
+                    var workspaceID = workspacesResults._embedded.workspaces[i].id;
+                }
+            }
+            console.log('workspace ID: ' + workspaceID);
+        }
+        //check if agent exists
+        var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
+        var checkAgents = yield axios_1.default.request({
+            method: 'GET',
+            headers: {
+                'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
+            },
+            url: 'https://' + API_BASE_URL + path
+        });
+        var workspacesIDResults = checkAgents.data;
+        if (workspacesIDResults.hasOwnProperty('_embedded')) {
+            //there are agents
+            console.log('there are agents, check if correct agent exists');
+            var agentsLenght = workspacesIDResults._embedded.agents.length;
+            for (var i = 0; i < agentsLenght; i++) {
+                if (workspacesIDResults._embedded.agents[i].name == 'veracode-sca-action') {
+                    var agentID = workspacesIDResults._embedded.agents[i].id;
+                }
+            }
+            if (agentID != undefined) {
+                console.log('agent ID: ' + agentID + ' - for agent with name "veracode-sca-action" - need to regenerate token');
+                var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents/' + agentID + '/token:regenerate';
+                var createAgent = yield axios_1.default.request({
+                    method: 'POST',
+                    headers: {
+                        'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
+                        'Content-Type': 'application/json',
+                    },
+                    url: 'https://' + API_BASE_URL + path
+                });
+                var SRCCLR_API_TOKEN = createAgent.data.access_token;
+                console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
+            }
+            else {
+                console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
+                var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
+                var data = '{"agent_type": "CLI","name": "veracode-sca-action"}';
+                var createAgent = yield axios_1.default.request({
+                    method: 'POST',
+                    headers: {
+                        'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
+                        'Content-Type': 'application/json',
+                    },
+                    data,
+                    url: 'https://' + API_BASE_URL + path
+                });
+                var SRCCLR_API_TOKEN = createAgent.data.token.access_token;
+                console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
+            }
+        }
+        else {
+            //there are no agents
+            console.log('there are no agents, create one');
+            var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
+            var data = '{"agent_type": "CLI","name": "veracode-sca-action"}';
+            var createAgent = yield axios_1.default.request({
+                method: 'POST',
+                headers: {
+                    'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
+                    'Content-Type': 'application/json',
+                },
+                data,
+                url: 'https://' + API_BASE_URL + path
+            });
+            var SRCCLR_API_TOKEN = createAgent.data.token.access_token;
+            console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
+        }
+    });
+}
+exports.workspace_automation = workspace_automation;
 
 
 /***/ }),
