@@ -23,9 +23,9 @@ const cleanCollectors = (inputArr:Array<string>) => {
 
 export async function runAction (options: Options)  {
     //check if workspace_autoamtion is set to true
-    core.info('Check if workspace_autoamtion is set to true');
+    core.info('Check if workspace_automation is set to true');
     if ( options.workspace_automation = true ) {
-        core.info('workspace_autoamtion is set to ture, will run workspace_autoamtion');
+        core.info('workspace_automation is set to ture, will run workspace automation');
 
         //set the platform region and base API url
         const cleanedID = options.VID?.replace('vera01ei-','') ?? '';
@@ -82,6 +82,34 @@ export async function runAction (options: Options)  {
             console.log('workspace ID: '+workspaceID)
         }
 
+        //check if agent exists
+        var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents'
+        var checkAgents = await Axios.request({
+            method: 'GET',
+            headers:{
+                'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
+            },
+            url: 'https://'+API_BASE_URL+path
+          });
+          
+        var workspacesIDResults = checkAgents.data
+        console.log(JSON.stringify(workspacesIDResults))
+
+        if ( workspacesIDResults.hasOwnProperty('_emdedded') ){
+            //there are agents
+            console.log('there are agents, check if agent exists');
+            var agentsLenght = workspacesIDResults.page.total_elements
+            for ( var i = 0; i < agentsLenght; i++ ){
+                if ( workspacesIDResults._embedded.agents[i].name == 'Veracode GitHub Action' ){
+                    var agentID = workspacesIDResults._embedded.agents[i].id
+                }
+            }
+            console.log('agent ID: '+agentID+' - for agent with name "Veracode GitHub Action"')
+        }
+        else {
+            //there are no agents
+            console.log('there are no agents, create one');
+        }
 
 
 

@@ -20429,9 +20429,9 @@ function runAction(options) {
     var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
         //check if workspace_autoamtion is set to true
-        core.info('Check if workspace_autoamtion is set to true');
+        core.info('Check if workspace_automation is set to true');
         if (options.workspace_automation = true) {
-            core.info('workspace_autoamtion is set to ture, will run workspace_autoamtion');
+            core.info('workspace_automation is set to ture, will run workspace automation');
             //set the platform region and base API url
             const cleanedID = (_b = (_a = options.VID) === null || _a === void 0 ? void 0 : _a.replace('vera01ei-', '')) !== null && _b !== void 0 ? _b : '';
             const cleanedKEY = (_d = (_c = options.VKEY) === null || _c === void 0 ? void 0 : _c.replace('vera01es-', '')) !== null && _d !== void 0 ? _d : '';
@@ -20480,6 +20480,32 @@ function runAction(options) {
                     }
                 }
                 console.log('workspace ID: ' + workspaceID);
+            }
+            //check if agent exists
+            var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
+            var checkAgents = yield axios_1.default.request({
+                method: 'GET',
+                headers: {
+                    'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
+                },
+                url: 'https://' + API_BASE_URL + path
+            });
+            var workspacesIDResults = checkAgents.data;
+            console.log(JSON.stringify(workspacesIDResults));
+            if (workspacesIDResults.hasOwnProperty('_emdedded')) {
+                //there are agents
+                console.log('there are agents, check if agent exists');
+                var agentsLenght = workspacesIDResults.page.total_elements;
+                for (var i = 0; i < agentsLenght; i++) {
+                    if (workspacesIDResults._embedded.agents[i].name == 'Veracode GitHub Action') {
+                        var agentID = workspacesIDResults._embedded.agents[i].id;
+                    }
+                }
+                console.log('agent ID: ' + agentID + ' - for agent with name "Veracode GitHub Action"');
+            }
+            else {
+                //there are no agents
+                console.log('there are no agents, create one');
             }
             /*
             
