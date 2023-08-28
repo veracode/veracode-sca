@@ -110,7 +110,7 @@ export async function runAction (options: Options)  {
             else {
                 console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
                 var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents'
-                var data = '{"agent_type": "CLI","name": "veracode-github-action"}'
+                var data = '{"agent_type": "CLI","name": "veracode-action"}'
                 var createAgent = await Axios.request({
                     method: 'POST',
                     headers:{
