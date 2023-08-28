@@ -32,7 +32,10 @@ export async function runAction (options: Options)  {
             stdio:"pipe",
             shell:false
         });
-          
+        let output: string = '';
+        execution.stdout!.on('data', (data) => {
+            output = `${output}${data}`;
+        });
         execution.on('error', (data) => {
             core.error(data);
         })
