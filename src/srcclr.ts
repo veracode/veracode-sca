@@ -64,6 +64,7 @@ export async function runAction (options: Options)  {
                 method: 'POST',
                 headers:{
                     'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
+                    'Content-Type': 'application/json',
                 },
                 data,
                 url: 'https://'+API_BASE_URL+path
