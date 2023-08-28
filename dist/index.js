@@ -20507,7 +20507,7 @@ function runAction(options) {
                 else {
                     console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
                     var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents';
-                    var data = '{"agetn_type":"CLI","name":"Veracoode-GitHub-Action"}';
+                    var data = '{"agent_type":"CLI","name":"Veracoode-GitHub-Action"}';
                     var createAgent = yield axios_1.default.request({
                         method: 'POST',
                         headers: {
