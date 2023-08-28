@@ -20502,7 +20502,18 @@ function runAction(options) {
                     }
                 }
                 if (agentID != undefined) {
-                    console.log('agent ID: ' + agentID + ' - for agent with name "veracode-sca-action"');
+                    console.log('agent ID: ' + agentID + ' - for agent with name "veracode-sca-action" - need to regenerate token');
+                    var path = '/srcclr/v3/workspaces/' + workspaceID + '/agents/' + agentID + 'token:regenerate';
+                    var createAgent = yield axios_1.default.request({
+                        method: 'POST',
+                        headers: {
+                            'Authorization': auth.generateHeader(path, 'POST', API_BASE_URL, cleanedID, cleanedKEY),
+                            'Content-Type': 'application/json',
+                        },
+                        url: 'https://' + API_BASE_URL + path
+                    });
+                    var SRCCLR_API_TOKEN = createAgent.data.access_token;
+                    console.log('SRCCLR_API_TOKEN: ' + SRCCLR_API_TOKEN);
                 }
                 else {
                     console.log('agent for "Veracode-GitHub-Action" doesn\'t exists and needs to be created');
