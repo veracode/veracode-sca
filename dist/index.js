@@ -20459,7 +20459,7 @@ function runAction(options) {
                 //worespace doesn't exists, create it
                 console.log('workspace doesn\'t exists and needs to be created');
                 var path = '/srcclr/v3/workspaces';
-                var data = '{"name":"' + encodeURIComponent(REPO_NAME) + '"}';
+                var data = '{"name":"' + REPO_NAME + '"}';
                 var checkWorkspace = yield axios_1.default.request({
                     method: 'POST',
                     headers: {

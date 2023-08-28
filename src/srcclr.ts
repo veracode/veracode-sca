@@ -59,7 +59,7 @@ export async function runAction (options: Options)  {
             console.log('workspace doesn\'t exists and needs to be created');
 
             var path = '/srcclr/v3/workspaces'
-            var data = '{"name":"'+encodeURIComponent(REPO_NAME)+'"}'
+            var data = '{"name":"'+REPO_NAME+'"}'
             var checkWorkspace = await Axios.request({
                 method: 'POST',
                 headers:{
