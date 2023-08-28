@@ -19861,8 +19861,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.generateHeader = void 0;
 const crypto_1 = __importDefault(__nccwpck_require__(6113));
-const id = process.env.API_ID; // your API ID, reading from environment variable
-const key = process.env.API_KEY; // your API key, reading from environment variable
 const preFix = "VERACODE-HMAC-SHA-256";
 const verStr = "vcode_request_version_1";
 var hmac256 = (data, key, format) => {

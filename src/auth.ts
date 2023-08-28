@@ -1,11 +1,7 @@
 import crypto from 'crypto';
 
-const id = process.env.API_ID; // your API ID, reading from environment variable
-const key = process.env.API_KEY; // your API key, reading from environment variable
-
 const preFix = "VERACODE-HMAC-SHA-256";
 const verStr = "vcode_request_version_1";
-
 
 var hmac256 = (data:any, key:any, format:any) => {
 	var hash = crypto.createHmac('sha256', key).update(data);

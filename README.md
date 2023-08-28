@@ -32,7 +32,7 @@ You may be able to simply use `${{ secrets.GITHUB_TOKEN }}` as a default option 
 Otherwise, you may be able create and assign __as secret__ a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and assign it with the required permissions (`repo` scope).
 
   
-### `workspace-automation`
+### `workspace_automation`
 **Optional** - whether to automatically create a workspace, project and token for the scan  
   
 Default Value: __false__
