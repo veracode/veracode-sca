@@ -106,7 +106,7 @@ export async function runAction (options: Options)  {
             }
             if ( agentID != undefined ){
                 console.log('agent ID: '+agentID+' - for agent with name "veracode-sca-action" - need to regenerate token')
-                var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents/'+agentID+'token:regenerate'
+                var path = '/srcclr/v3/workspaces/'+workspaceID+'/agents/'+agentID+'/token:regenerate'
                 var createAgent = await Axios.request({
                     method: 'POST',
                     headers:{
