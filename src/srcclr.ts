@@ -42,7 +42,8 @@ export async function runAction (options: Options)  {
         }
 
         //check if workspace exists
-        var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D='+encodeURIComponent(REPO_NAME)
+        //var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D='+encodeURIComponent(REPO_NAME)
+        var path = '/appsec/v1/applications?size=100&page=0&name='+encodeURIComponent(REPO_NAME)
         console.log('PATH: '+path)
         var checkWorkspace = await Axios.request({
             method: 'GET',
