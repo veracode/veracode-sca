@@ -8,6 +8,7 @@ import * as github from '@actions/github'
 import { env } from "process";
 import { writeFile } from 'fs';
 import * as workspace_autoamtion from './workspace_automation'
+import { exec } from 'child_process';
 
 
 const cleanCollectors = (inputArr:Array<string>) => {
@@ -28,17 +29,17 @@ export async function runAction (options: Options)  {
         var SRCCLR_API_TOKEN = await workspace_autoamtion.workspace_automation(options);
         core.info('Exporting Token to environment')
         var command = 'export SRCCLR_API_TOKEN='+SRCCLR_API_TOKEN
-        const execution = spawn('sh',['-c',command],{
-            stdio:"pipe",
-            shell:false
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error executing command: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`Command stderr: ${stderr}`);
+                return;
+            }
+            console.log(`Command output:\n${stdout}`);
         });
-        let output: string = '';
-        execution.stdout!.on('data', (data) => {
-            output = `${output}${data}`;
-        });
-        execution.on('error', (data) => {
-            core.error(data);
-        })
     }
     else {
         core.info('workspace_autoamtion is set to false, will not run workspace_autoamtion');

@@ -20411,6 +20411,7 @@ const index_1 = __nccwpck_require__(4925);
 const github = __importStar(__nccwpck_require__(3134));
 const fs_1 = __nccwpck_require__(7147);
 const workspace_autoamtion = __importStar(__nccwpck_require__(9306));
+const child_process_2 = __nccwpck_require__(2081);
 const cleanCollectors = (inputArr) => {
     let allowed = [];
     for (var input of inputArr) {
@@ -20429,16 +20430,16 @@ function runAction(options) {
             var SRCCLR_API_TOKEN = yield workspace_autoamtion.workspace_automation(options);
             core.info('Exporting Token to environment');
             var command = 'export SRCCLR_API_TOKEN=' + SRCCLR_API_TOKEN;
-            const execution = (0, child_process_1.spawn)('sh', ['-c', command], {
-                stdio: "pipe",
-                shell: false
-            });
-            let output = '';
-            execution.stdout.on('data', (data) => {
-                output = `${output}${data}`;
-            });
-            execution.on('error', (data) => {
-                core.error(data);
+            (0, child_process_2.exec)(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error executing command: ${error.message}`);
+                    return;
+                }
+                if (stderr) {
+                    console.error(`Command stderr: ${stderr}`);
+                    return;
+                }
+                console.log(`Command output:\n${stdout}`);
             });
         }
         else {
