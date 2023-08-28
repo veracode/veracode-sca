@@ -26,7 +26,7 @@ export async function workspace_automation(options:any) {
                 'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
             },
             url: 'https://'+API_BASE_URL+path
-          });
+        });
           
           var workspacesResults = checkWorkspace.data
 
@@ -45,6 +45,18 @@ export async function workspace_automation(options:any) {
                 data,
                 url: 'https://'+API_BASE_URL+path
             });
+            core.info('workspace created - now get the workspace ID');
+            var path = '/srcclr/v3/workspaces?filter%5Bworkspace%5D='+encodeURIComponent(REPO_NAME)
+            var checkWorkspace = await Axios.request({
+                method: 'GET',
+                headers:{
+                    'Authorization': auth.generateHeader(path, 'GET', API_BASE_URL, cleanedID, cleanedKEY),
+                },
+                url: 'https://'+API_BASE_URL+path
+            });
+            var workspaceLenght = workspacesResults.page.total_elements
+            var workspaceID = workspacesResults._embedded.workspaces[0].id
+
           }
           else {
             //workspace exists, get the workspace ID
