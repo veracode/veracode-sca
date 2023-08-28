@@ -3,13 +3,13 @@ import crypto from 'crypto';
 const preFix = "VERACODE-HMAC-SHA-256";
 const verStr = "vcode_request_version_1";
 
-var hmac256 = (data:any, key:any, format:any) => {
+function hmac256(data:any, key:any, format:any){
 	var hash = crypto.createHmac('sha256', key).update(data);
 	// no format = Buffer / byte array
 	return hash.digest(format);
 }
 
-var getByteArray = (hex:any) => {
+function getByteArray(hex:any) {
 	var bytes = [];
 
 	for(var i = 0; i < hex.length-1; i+=2){

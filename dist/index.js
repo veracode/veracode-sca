@@ -19863,19 +19863,19 @@ exports.generateHeader = void 0;
 const crypto_1 = __importDefault(__nccwpck_require__(6113));
 const preFix = "VERACODE-HMAC-SHA-256";
 const verStr = "vcode_request_version_1";
-var hmac256 = (data, key, format) => {
+function hmac256(data, key, format) {
     var hash = crypto_1.default.createHmac('sha256', key).update(data);
     // no format = Buffer / byte array
     return hash.digest(format);
-};
-var getByteArray = (hex) => {
+}
+function getByteArray(hex) {
     var bytes = [];
     for (var i = 0; i < hex.length - 1; i += 2) {
         bytes.push(parseInt(hex.substr(i, 2), 16));
     }
     // signed 8-bit integer array (byte array)
     return Int8Array.from(bytes);
-};
+}
 function generateHeader(url, method, host, id, key) {
     var data = `id=${id}&host=${host}&url=${url}&method=${method}`;
     var timestamp = (new Date().getTime()).toString();
