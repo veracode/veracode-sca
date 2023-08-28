@@ -95,7 +95,7 @@ export async function runAction (options: Options)  {
         var workspacesIDResults = checkAgents.data
         console.log(JSON.stringify(workspacesIDResults))
 
-        if ( workspacesIDResults.hasOwnProperty('_emdedded') ){
+        if ( workspacesIDResults.hasOwnProperty('_embedded') ){
             //there are agents
             console.log('there are agents, check if agent exists');
             var agentsLenght = workspacesIDResults.page.total_elements
@@ -104,7 +104,12 @@ export async function runAction (options: Options)  {
                     var agentID = workspacesIDResults._embedded.agents[i].id
                 }
             }
-            console.log('agent ID: '+agentID+' - for agent with name "Veracode GitHub Action"')
+            if ( agentID != '' ){
+                console.log('agent ID: '+agentID+' - for agent with name "Veracode GitHub Action"')
+            }
+            else {
+                console.log('agent for "Veracode GitHub Action doesn\'t exists and needs to be created');
+            }
         }
         else {
             //there are no agents
