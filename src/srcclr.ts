@@ -201,11 +201,11 @@ export async function runAction (options: Options)  {
                     const commentID:any = context.payload.pull_request?.number
 
 
-                    let commentBody = '<br>![](https://www.veracode.com/themes/veracode_new/library/img/veracode-black-hires.svg)<br>'
-                    commentBody += "Veraocde SCA Scan failed with exit code "+code+"\n"
+                    let commentBody = '<br>![](https://www.veracode.com/sites/default/files/2022-04/logo_1.svg)<br>'
+                    commentBody += "<pre>Veraocde SCA Scan finished with exit code "+code+"\n"
                     commentBody += '\n<details><summary>Veracode SCA Scan details</summary><p>\n'
-                    commentBody += output.replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;');
-                    commentBody += '</p></details>\n'
+                    commentBody += output //.replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+                    commentBody += '</p></details>\n</pre>'
 
 
                 

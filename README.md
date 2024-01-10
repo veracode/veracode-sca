@@ -104,7 +104,7 @@ jobs:
       - name: Run Veracode SCA
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-        uses: veracode/veracode-sca@v2.1.9
+        uses: veracode/veracode-sca@v2.1.10
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           create-issues: false   
@@ -135,7 +135,7 @@ jobs:
       - name: Run Veracode SCA
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-        uses: veracode/veracode-sca@v2.1.9
+        uses: veracode/veracode-sca@v2.1.10
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           quick: true
@@ -151,4 +151,11 @@ jobs:
 ### Individual Issue
 <p align="center">
   <img src="/media/issue.png" width="700px" alt="Individual issues ticket content"/>
-</p>
+</p>  
+  
+## Compile the action  
+The action comes pre-compiled as transpiled JavaScript. If you want to fork and build it on your own you need NPM to be installed, use `ncc` to compile all node modules into a single file, so they don't need to be installed on every action run. The command to build is simply  
+
+```sh
+ncc build ./src/action.ts  
+```
