@@ -17,8 +17,10 @@ const options: Options = {
     debug: core.getBooleanInput('debug'),
     "skip-vms": core.getBooleanInput('skip-vms'),
     "no-graphs": core.getBooleanInput('no-graphs'),
+    "no-upload": core.getBooleanInput('no-upload'),
     recursive: core.getBooleanInput('recursive'),
     "skip-collectors": core.getInput('skip-collectors').split(',')
+    
     
 }
 

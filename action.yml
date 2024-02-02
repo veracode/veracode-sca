@@ -53,6 +53,10 @@ inputs:
     description: "Run the SRCCLR with the `--no-graphs` option"
     required: false
     default: "false"
+  no-upload:
+    description: "Run the SRCCLR with the `--no-upload` option"
+    required: false
+    default: "false"
 runs:
   using: 'node20'
   main: 'dist/index.js'

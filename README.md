@@ -78,6 +78,11 @@ Default Value: __false__
 ### `no-graphs`
 __Optional__ - do not include dependency graphs in the JSON output.
 
+Default Value: __false__  
+  
+### `no-upload`
+__Optional__ - do not store results on the Veracode platform.
+
 Default Value: __false__
 
 ## Examples
