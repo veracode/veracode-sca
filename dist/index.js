@@ -38660,7 +38660,7 @@ function runAction(options) {
                         const repo = repository.split("/");
                         const commentID = (_b = context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.number;
                         let commentBody = '<br>![](https://www.veracode.com/sites/default/files/2022-04/logo_1.svg)<br>';
-                        commentBody += "<pre>Veraocde SCA Scan finished with exit code " + code + "\n";
+                        commentBody += "<pre>Veracode SCA Scan finished with exit code " + code + "\n";
                         commentBody += '\n<details><summary>Veracode SCA Scan details</summary><p>\n';
                         commentBody += output; //.replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;');
                         commentBody += '</p></details>\n</pre>';
@@ -38680,7 +38680,7 @@ function runAction(options) {
                     }
                     // if scan was set to fail the pipeline should fail and show a summary of the scan results
                     if (code != null && code > 0) {
-                        let summary_info = "Veraocde SCA Scan failed with exit code " + code + "\n" + output;
+                        let summary_info = "Veracode SCA Scan failed with exit code " + code + "\n" + output;
                         core.setFailed(summary_info);
                     }
                     //run(options,core.info);
