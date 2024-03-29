@@ -38612,6 +38612,7 @@ function runAction(options) {
                 }));
             }
             else {
+                core.info('Command to run: ' + command);
                 const execution = (0, child_process_1.spawn)('sh', ['-c', command], {
                     stdio: "pipe",
                     shell: false
@@ -38630,14 +38631,28 @@ function runAction(options) {
                     var _b;
                     //core.info(output);
                     core.info(`Scan finished with exit code:  ${code}`);
+                    core.info(output);
                     //write output to file
-                    (0, fs_1.writeFile)('scaResults.txt', output, (err) => {
-                        if (err)
-                            throw err;
+                    // writeFile('scaResults.txt', output, (err) => {
+                    //     if (err) throw err;
+                    //     console.log('The file has been saved!');
+                    // });
+                    try {
+                        (0, fs_1.writeFileSync)('scaResults.txt', output);
                         console.log('The file has been saved!');
-                    });
+                    }
+                    catch (err) {
+                        console.error('Error writing file:', err);
+                    }
+                    // core.info('reading file')
+                    // try {
+                    //     const data = readFileSync('scaResults.txt', 'utf8');
+                    //     console.log('Full file output: '+data);
+                    // } catch (err) {
+                    //     console.error(err);
+                    // }
                     //store output files as artifacts
-                    core.info('Store json Results as Artifact');
+                    core.info('Store txt Results as Artifact');
                     const artifact = __nccwpck_require__(1413);
                     const artifactClient = artifact.create();
                     const artifactName = 'Veracode Agent Based SCA Results';

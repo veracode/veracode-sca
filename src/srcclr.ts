@@ -7,6 +7,8 @@ import { SCA_OUTPUT_FILE,run, runText } from "./index";
 import * as github from '@actions/github'
 import { env } from "process";
 import { writeFile } from 'fs';
+import { readFileSync } from 'fs';
+import { writeFileSync } from 'fs';
 
 
 const cleanCollectors = (inputArr:Array<string>) => {
@@ -137,7 +139,7 @@ export async function runAction (options: Options)  {
 
         
         } else {
-
+            core.info('Command to run: '+command)
             const execution = spawn('sh',['-c',command],{
                 stdio:"pipe",
                 shell:false
@@ -160,14 +162,31 @@ export async function runAction (options: Options)  {
                 //core.info(output);
                 core.info(`Scan finished with exit code:  ${code}`);
 
+                core.info(output)
                 //write output to file
-                writeFile('scaResults.txt', output, (err) => {
-                    if (err) throw err;
+                // writeFile('scaResults.txt', output, (err) => {
+                //     if (err) throw err;
+                //     console.log('The file has been saved!');
+                // });
+
+                try {
+                    writeFileSync('scaResults.txt', output);
                     console.log('The file has been saved!');
-                });
+                } catch (err) {
+                    console.error('Error writing file:', err);
+                }
+
+                
+                // core.info('reading file')
+                // try {
+                //     const data = readFileSync('scaResults.txt', 'utf8');
+                //     console.log('Full file output: '+data);
+                // } catch (err) {
+                //     console.error(err);
+                // }
 
                 //store output files as artifacts
-                core.info('Store json Results as Artifact')
+                core.info('Store txt Results as Artifact')
                 const artifact = require('@actions/artifact');
                 const artifactClient = artifact.create()
                 const artifactName = 'Veracode Agent Based SCA Results';
