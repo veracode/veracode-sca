@@ -7,6 +7,7 @@ import { SCA_OUTPUT_FILE,run, runText } from "./index";
 import * as github from '@actions/github'
 import { env } from "process";
 import { writeFile } from 'fs';
+import { readFileSync } from 'fs';
 
 
 const cleanCollectors = (inputArr:Array<string>) => {
@@ -166,6 +167,15 @@ export async function runAction (options: Options)  {
                     if (err) throw err;
                     console.log('The file has been saved!');
                 });
+
+                
+                core.info('reading file')
+                try {
+                    const data = readFileSync('scaResults.txt', 'utf8');
+                    console.log('Full file output: '+data);
+                } catch (err) {
+                    console.error(err);
+                }
 
                 //store output files as artifacts
                 core.info('Store txt Results as Artifact')

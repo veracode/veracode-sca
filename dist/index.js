@@ -38505,6 +38505,7 @@ const core = __importStar(__nccwpck_require__(5127));
 const index_1 = __nccwpck_require__(4925);
 const github = __importStar(__nccwpck_require__(3134));
 const fs_1 = __nccwpck_require__(7147);
+const fs_2 = __nccwpck_require__(7147);
 const cleanCollectors = (inputArr) => {
     let allowed = [];
     for (var input of inputArr) {
@@ -38638,6 +38639,14 @@ function runAction(options) {
                             throw err;
                         console.log('The file has been saved!');
                     });
+                    core.info('reading file');
+                    try {
+                        const data = (0, fs_2.readFileSync)('scaResults.txt', 'utf8');
+                        console.log('Full file output: ' + data);
+                    }
+                    catch (err) {
+                        console.error(err);
+                    }
                     //store output files as artifacts
                     core.info('Store txt Results as Artifact');
                     const artifact = __nccwpck_require__(1413);
