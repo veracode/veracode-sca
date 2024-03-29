@@ -38505,7 +38505,6 @@ const core = __importStar(__nccwpck_require__(5127));
 const index_1 = __nccwpck_require__(4925);
 const github = __importStar(__nccwpck_require__(3134));
 const fs_1 = __nccwpck_require__(7147);
-const fs_2 = __nccwpck_require__(7147);
 const cleanCollectors = (inputArr) => {
     let allowed = [];
     for (var input of inputArr) {
@@ -38632,27 +38631,26 @@ function runAction(options) {
                     var _b;
                     //core.info(output);
                     core.info(`Scan finished with exit code:  ${code}`);
-                    core.info('Full ouput of the scan: ' + output);
+                    core.info(output);
                     //write output to file
                     // writeFile('scaResults.txt', output, (err) => {
                     //     if (err) throw err;
                     //     console.log('The file has been saved!');
                     // });
                     try {
-                        (0, fs_2.writeFileSync)('scaResults.txt', output);
+                        (0, fs_1.writeFileSync)('scaResults.txt', output);
                         console.log('The file has been saved!');
                     }
                     catch (err) {
                         console.error('Error writing file:', err);
                     }
-                    core.info('reading file');
-                    try {
-                        const data = (0, fs_1.readFileSync)('scaResults.txt', 'utf8');
-                        console.log('Full file output: ' + data);
-                    }
-                    catch (err) {
-                        console.error(err);
-                    }
+                    // core.info('reading file')
+                    // try {
+                    //     const data = readFileSync('scaResults.txt', 'utf8');
+                    //     console.log('Full file output: '+data);
+                    // } catch (err) {
+                    //     console.error(err);
+                    // }
                     //store output files as artifacts
                     core.info('Store txt Results as Artifact');
                     const artifact = __nccwpck_require__(1413);

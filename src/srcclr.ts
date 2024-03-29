@@ -162,7 +162,7 @@ export async function runAction (options: Options)  {
                 //core.info(output);
                 core.info(`Scan finished with exit code:  ${code}`);
 
-                core.info('Full ouput of the scan: '+output)
+                core.info(output)
                 //write output to file
                 // writeFile('scaResults.txt', output, (err) => {
                 //     if (err) throw err;
@@ -177,13 +177,13 @@ export async function runAction (options: Options)  {
                 }
 
                 
-                core.info('reading file')
-                try {
-                    const data = readFileSync('scaResults.txt', 'utf8');
-                    console.log('Full file output: '+data);
-                } catch (err) {
-                    console.error(err);
-                }
+                // core.info('reading file')
+                // try {
+                //     const data = readFileSync('scaResults.txt', 'utf8');
+                //     console.log('Full file output: '+data);
+                // } catch (err) {
+                //     console.error(err);
+                // }
 
                 //store output files as artifacts
                 core.info('Store txt Results as Artifact')
