@@ -38634,14 +38634,20 @@ function runAction(options) {
                     core.info(`Scan finished with exit code:  ${code}`);
                     core.info('Full ouput of the scan: ' + output);
                     //write output to file
-                    (0, fs_1.writeFile)('scaResults.txt', output, (err) => {
-                        if (err)
-                            throw err;
+                    // writeFile('scaResults.txt', output, (err) => {
+                    //     if (err) throw err;
+                    //     console.log('The file has been saved!');
+                    // });
+                    try {
+                        (0, fs_2.writeFileSync)('scaResults.txt', output);
                         console.log('The file has been saved!');
-                    });
+                    }
+                    catch (err) {
+                        console.error('Error writing file:', err);
+                    }
                     core.info('reading file');
                     try {
-                        const data = (0, fs_2.readFileSync)('scaResults.txt', 'utf8');
+                        const data = (0, fs_1.readFileSync)('scaResults.txt', 'utf8');
                         console.log('Full file output: ' + data);
                     }
                     catch (err) {

@@ -8,6 +8,7 @@ import * as github from '@actions/github'
 import { env } from "process";
 import { writeFile } from 'fs';
 import { readFileSync } from 'fs';
+import { writeFileSync } from 'fs';
 
 
 const cleanCollectors = (inputArr:Array<string>) => {
@@ -163,10 +164,17 @@ export async function runAction (options: Options)  {
 
                 core.info('Full ouput of the scan: '+output)
                 //write output to file
-                writeFile('scaResults.txt', output, (err) => {
-                    if (err) throw err;
+                // writeFile('scaResults.txt', output, (err) => {
+                //     if (err) throw err;
+                //     console.log('The file has been saved!');
+                // });
+
+                try {
+                    writeFileSync('scaResults.txt', output);
                     console.log('The file has been saved!');
-                });
+                } catch (err) {
+                    console.error('Error writing file:', err);
+                }
 
                 
                 core.info('reading file')
