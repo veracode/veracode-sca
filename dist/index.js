@@ -38612,6 +38612,7 @@ function runAction(options) {
                 }));
             }
             else {
+                core.info('Command to run: ' + command);
                 const execution = (0, child_process_1.spawn)('sh', ['-c', command], {
                     stdio: "pipe",
                     shell: false
@@ -38630,6 +38631,7 @@ function runAction(options) {
                     var _b;
                     //core.info(output);
                     core.info(`Scan finished with exit code:  ${code}`);
+                    core.info('Full ouput of the scan: ' + output);
                     //write output to file
                     (0, fs_1.writeFile)('scaResults.txt', output, (err) => {
                         if (err)
@@ -38637,7 +38639,7 @@ function runAction(options) {
                         console.log('The file has been saved!');
                     });
                     //store output files as artifacts
-                    core.info('Store json Results as Artifact');
+                    core.info('Store txt Results as Artifact');
                     const artifact = __nccwpck_require__(1413);
                     const artifactClient = artifact.create();
                     const artifactName = 'Veracode Agent Based SCA Results';
