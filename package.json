@@ -25,14 +25,14 @@
   },
   "homepage": "https://github.com/veracode/veracode-sca#readme",
   "devDependencies": {
-    "@types/node": "^16.11.22",
+    "@types/node": "^16.18.98",
     "@vercel/ncc": "^0.33.0",
     "dotenv": "^15.0.0",
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "@actions/artifact": "^1.1.2",
-    "@actions/core": "^1.6.0",
+    "@actions/artifact": "^2.1.4",
+    "@actions/core": "^1.10.0",
     "@actions/github": "^5.0.0"
   }
 }
