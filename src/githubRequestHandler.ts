@@ -77,21 +77,12 @@ export class GithubHandler {
         console.log('getIssues - START');
 
         let owner:string = options.owner;
+        let organization:string = options.owner;
         let repo:string = options.repo;
 
-        console.log('Owner:', owner);
-        console.log('Repo:', repo);
 
-        // Ensure the variables are strings and not empty
-        if (typeof owner !== 'string' || owner.trim() === '') {
-          throw new Error('Invalid owner value');
-        }
-        if (typeof repo !== 'string' || repo.trim() === '') {
-            throw new Error('Invalid repo value');
-        }
-
-        const query = `query IsslesTitle(`+owner+`: String!,`+repo+`: String!, $count: Int!,$label: String!) {
-            repository(name: `+repo+`, owner: `+owner+`) {
+        const query = `query IsslesTitle($organization: String!,$repo: String!, $count: Int!,$label: String!) {
+            repository(name: $repo$, owner: $organization) {
               issues(first: $count,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
@@ -107,8 +98,8 @@ export class GithubHandler {
             }
           }`;
 
-        const nextQuery = `query IsslesTitle(`+owner+`: String!,`+repo+`: String!, $count: Int!, $endCursor: String!,$label: String!) {
-            repository(name: `+repo+`, owner: `+owner+`) {
+        const nextQuery = `query IsslesTitle($organization: String!,$repo: String!, $count: Int!, $endCursor: String!,$label: String!) {
+            repository(name: $repo, owner: $organization) {
               issues(first: $count,after: $endCursor,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
