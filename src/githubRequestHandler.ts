@@ -47,8 +47,8 @@ export class GithubHandler {
             }
             // Creating the base label
             await this.client.rest.issues.createLabel({
-                owner:context.repo.owner,
-                repo:context.repo.repo,
+                owner:options.owner,
+                repo:options.repo,
                 name: VERACODE_LABEL.name,
                 color: VERACODE_LABEL.color,
                 description: VERACODE_LABEL.description

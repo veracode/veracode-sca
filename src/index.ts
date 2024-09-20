@@ -116,9 +116,7 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     var authToken = 'token ' + options.github_token
 
-                    const owner = github.context.repo.owner;
-                    const repo = github.context.repo.repo;
-                    var pr_link = `Veracode issue link to PR: https://github.com/`+owner+`/`+repo+`/pull/`+pr_commentID
+                    var pr_link = `Veracode issue link to PR: https://github.com/`+options.owner+`/`+options.repo+`/pull/`+pr_commentID
 
                     console.log('Adding PR to the issue now.')
                         
@@ -147,9 +145,7 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     var authToken = 'token ' + options.github_token
 
-                    const owner = github.context.repo.owner;
-                    const repo = github.context.repo.repo;
-                    var pr_link = `Veracode issue link to PR: https://github.com/`+owner+`/`+repo+`/pull/`+pr_commentID
+                    var pr_link = `Veracode issue link to PR: https://github.com/`+options.owner+`/`+options.repo+`/pull/`+pr_commentID
 
                     console.log('Adding PR to the issue now.')
                         
