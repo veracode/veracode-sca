@@ -79,6 +79,9 @@ export class GithubHandler {
         let owner = options.owner;
         let repo = options.repo;
 
+        console.log('Owner:', owner);
+        console.log('Repo:', repo);
+
         const query = `query IsslesTitle($owner: String!,$repo: String!, $count: Int!,$label: String!) {
             repository(name: $repo, owner: $owner) {
               issues(first: $count,filterBy: {labels: [$label], states: OPEN}) {
