@@ -53,11 +53,11 @@ inputs:
     description: "Run the SRCCLR with the `--no-graphs` option"
     required: false
     default: "false"
-  owner:
+  repo-owner:
     description: "Repo Owner"
     required: false
     default: "false"
-  repo:
+  repo-name:
     description: "Repo Name"
     required: false
     default: "false"
