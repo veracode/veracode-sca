@@ -76,11 +76,19 @@ export class GithubHandler {
     public async listExistingOpenIssues(options: any) {
         console.log('getIssues - START');
 
-        let owner = options.owner;
-        let repo = options.repo;
+        let owner:string = options.owner;
+        let repo:string = options.repo;
 
         console.log('Owner:', owner);
         console.log('Repo:', repo);
+
+        // Ensure the variables are strings and not empty
+        if (typeof owner !== 'string' || owner.trim() === '') {
+          throw new Error('Invalid owner value');
+        }
+        if (typeof repo !== 'string' || repo.trim() === '') {
+            throw new Error('Invalid repo value');
+        }
 
         const query = `query IsslesTitle($owner: String!,$repo: String!, $count: Int!,$label: String!) {
             repository(name: $repo, owner: $owner) {
