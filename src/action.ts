@@ -3,6 +3,7 @@
 import * as core from '@actions/core'
 import { Options } from "./options";
 import {runAction} from './srcclr';
+import * as github from '@actions/github';
 
 const options: Options = {
     quick: core.getBooleanInput('quick'),
@@ -18,8 +19,9 @@ const options: Options = {
     "skip-vms": core.getBooleanInput('skip-vms'),
     "no-graphs": core.getBooleanInput('no-graphs'),
     recursive: core.getBooleanInput('recursive'),
-    "skip-collectors": core.getInput('skip-collectors').split(',')
-    
+    "skip-collectors": core.getInput('skip-collectors').split(','),
+    owner: core.getInput('repo_owner') ? core.getInput('repo_owner') : github.context.repo.owner,
+    repo: core.getInput('repo_name') ? core.getInput('repo_name') : github.context.repo.repo
 }
 
 runAction(options);

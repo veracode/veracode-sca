@@ -126,8 +126,8 @@ const syncExistingOpenIssues = async (options:any) => {
                         headers: {
                             authorization: authToken
                         },
-                        owner: owner,
-                        repo: repo,
+                        owner: options.owner,
+                        repo: options.repo,
                         issue_number: openIssueNumber,
                         data: {
                             "body": pr_link
@@ -157,8 +157,8 @@ const syncExistingOpenIssues = async (options:any) => {
                         headers: {
                             authorization: authToken
                         },
-                        owner: owner,
-                        repo: repo,
+                        owner: options.owner,
+                        repo: options.repo,
                         issue_number: issueNumber,
                         data: {
                             "body": pr_link
