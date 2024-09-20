@@ -76,7 +76,7 @@ export class GithubHandler {
     public async listExistingOpenIssues(options: any) {
         console.log('getIssues - START');
         const query = `query IsslesTitle($options.owner: String!,$options.repo: String!, $count: Int!,$label: String!) {
-            repository(name: $options.repo, options.owner: $organization) {
+            repository(name: $options.repo, owner: $options.owner) {
               issues(first: $count,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
@@ -93,7 +93,7 @@ export class GithubHandler {
           }`;
 
         const nextQuery = `query IsslesTitle($options.owner: String!,$options.repo: String!, $count: Int!, $endCursor: String!,$label: String!) {
-            repository(name: $options.repo, options.owner: $organization) {
+            repository(name: $options.repo, owner: $options.owner) {
               issues(first: $count,after: $endCursor,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
