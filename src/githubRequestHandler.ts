@@ -82,7 +82,7 @@ export class GithubHandler {
 
 
         const query = `query IsslesTitle($organization: String!,$repo: String!, $count: Int!,$label: String!) {
-            repository(name: $repo$, owner: $organization) {
+            repository(name: $repo, owner: $organization) {
               issues(first: $count,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
