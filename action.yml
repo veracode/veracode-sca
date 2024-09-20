@@ -56,11 +56,9 @@ inputs:
   repo_owner:
     description: "Repo Owner"
     required: false
-    default: "false"
   repo_name:
     description: "Repo Name"
     required: false
-    default: "false"
 runs:
   using: 'node20'
   main: 'dist/index.js'
