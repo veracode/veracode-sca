@@ -20,8 +20,8 @@ const options: Options = {
     "no-graphs": core.getBooleanInput('no-graphs'),
     recursive: core.getBooleanInput('recursive'),
     "skip-collectors": core.getInput('skip-collectors').split(','),
-    owner: core.getInput('owner') ? core.getInput('owner') : github.context.repo.owner,
-    repo: core.getInput('repo') ? core.getInput('repo') : github.context.repo.repo
+    owner: core.getInput('repo-owner') ? core.getInput('repo-owner') : github.context.repo.owner,
+    repo: core.getInput('repo-name') ? core.getInput('repo-name') : github.context.repo.repo
 }
 
 runAction(options);
