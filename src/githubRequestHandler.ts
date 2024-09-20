@@ -12,15 +12,15 @@ export class GithubHandler {
         this.client = getOctokit(token); 
     }
 
-    public async getVeracodeLabel ()  {
+    public async getVeracodeLabel (options: any)  {
         console.log('getVeracodeLabel - START');
         let veracodeLabel:any = {};
         try {
             
             veracodeLabel = await this.client.rest
                 .issues.getLabel({
-                    owner:context.repo.owner,
-                    repo:context.repo.repo,
+                    owner:options.owner,
+                    repo:options.repo,
                     name:VERACODE_LABEL.name
             });
             console.log('Veracode Labels already exist');
@@ -32,14 +32,14 @@ export class GithubHandler {
         return veracodeLabel;
     }
 
-    public async createVeracodeLabels() {
+    public async createVeracodeLabels(options: any) {
         console.log('createVeracodeLabels - END');
         try {
             // Creating the severity labels
             for (var label of Object.values(SEVERITY_LABELS)) {
               await this.client.rest.issues.createLabel({
-                    owner:context.repo.owner,
-                    repo:context.repo.repo,
+                    owner:options.owner,
+                    repo:options.repo,
                     name: label.name,
                     color: label.color,
                     description: label.description

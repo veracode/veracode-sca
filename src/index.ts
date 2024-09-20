@@ -46,7 +46,7 @@ export async function run(options:Options, msgFunc: (msg: string) => void) {
     githubHandler = new GithubHandler(options.github_token);
 
     if (Object.keys(librariesWithIssues).length>0) {
-        await verifyLabels();
+        await verifyLabels(options);
         await syncExistingOpenIssues(options);
 
         // check for failing the step
@@ -223,11 +223,11 @@ const getSeverityName = (cvss: number):Label => {
     return label;
 }
 
-const verifyLabels = async () => {
-    const baseLabel = await githubHandler.getVeracodeLabel();
+const verifyLabels = async (options:any) => {
+    const baseLabel = await githubHandler.getVeracodeLabel(options);
     
     if (!baseLabel || !baseLabel.data) {
-        await githubHandler.createVeracodeLabels();
+        await githubHandler.createVeracodeLabels(options);
     }
 }
 
