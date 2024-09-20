@@ -70,7 +70,7 @@ const addIssueToLibrary = (libId:string,lib:SCALibrary,details:ReportedLibraryIs
 }
 
 const syncExistingOpenIssues = async (options:any) => {
-    const existingOpenIssues = await githubHandler.listExistingOpenIssues();
+    const existingOpenIssues = await githubHandler.listExistingOpenIssues(options);
 
     const lenghtOfLibs = Object.keys(librariesWithIssues).length
     core.info('Libraries with issues found: '+lenghtOfLibs)
@@ -122,7 +122,7 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     console.log('Adding PR to the issue now.')
                         
-                    await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    await request('POST /repos/{options.owner}/{options.repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },
@@ -137,7 +137,7 @@ const syncExistingOpenIssues = async (options:any) => {
             }
             else {
                 core.info('Issue needs to be created. --- '+libraryTitle)
-                const ghResponse = await githubHandler.createIssue(librariesWithIssues[key]['issues'][j]);
+                const ghResponse = await githubHandler.createIssue(librariesWithIssues[key]['issues'][j],options);
                 //core.info('Issue creation response: '+JSON.stringify(ghResponse))
                 var issueNumber = ghResponse.data.number
                 if ( isPR >= 1 ){
@@ -153,7 +153,7 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     console.log('Adding PR to the issue now.')
                         
-                    await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    await request('POST /repos/{options.owner}/{options.repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },

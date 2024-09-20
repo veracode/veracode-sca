@@ -63,20 +63,20 @@ export class GithubHandler {
         console.log('createVeracodeLabels - END');
     }
 
-    public async createIssue(reportedIssue: ReportedLibraryIssue) {
+    public async createIssue(reportedIssue: ReportedLibraryIssue, options: any) {
         return await this.client.rest.issues.create({
-            owner:context.repo.owner,
-            repo:context.repo.repo,
+            owner:options.owner,
+            repo:options.repo,
             title:reportedIssue.title,
             body:reportedIssue.description,
             labels: reportedIssue.labels
         });
     }
 
-    public async listExistingOpenIssues() {
+    public async listExistingOpenIssues(options: any) {
         console.log('getIssues - START');
         const query = `query IsslesTitle($organization: String!,$repo: String!, $count: Int!,$label: String!) {
-            repository(name: $repo, owner: $organization) {
+            repository(name: $options.repo, options.owner: $organization) {
               issues(first: $count,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
@@ -93,7 +93,7 @@ export class GithubHandler {
           }`;
 
         const nextQuery = `query IsslesTitle($organization: String!,$repo: String!, $count: Int!, $endCursor: String!,$label: String!) {
-            repository(name: $repo, owner: $organization) {
+            repository(name: $options.repo, options.owner: $organization) {
               issues(first: $count,after: $endCursor,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
@@ -122,8 +122,8 @@ export class GithubHandler {
                 },
                 query,
                 count: ISSUES_PULL_COUNT,
-                organization: context.repo.owner,
-                repo: context.repo.repo,
+                organization: options.owner,
+                repo: options.repo,
                 label: VERACODE_LABEL.name
             });
              
@@ -140,8 +140,8 @@ export class GithubHandler {
                     query:nextQuery,
                     count: ISSUES_PULL_COUNT,
                     endCursor,
-                    organization: context.repo.owner,
-                    repo: context.repo.repo,
+                    organization: options.owner,
+                    repo: options.repo,
                     label: VERACODE_LABEL.name
                 });
                 issues = issues.concat(issuesRes.repository.issues.edges);
