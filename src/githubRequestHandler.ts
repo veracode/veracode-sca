@@ -90,8 +90,8 @@ export class GithubHandler {
             throw new Error('Invalid repo value');
         }
 
-        const query = `query IsslesTitle($owner: String!,$repo: String!, $count: Int!,$label: String!) {
-            repository(name: $repo, owner: $owner) {
+        const query = `query IsslesTitle(`+owner+`: String!,`+repo+`: String!, $count: Int!,$label: String!) {
+            repository(name: `+repo+`, owner: `+owner+`) {
               issues(first: $count,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
@@ -107,8 +107,8 @@ export class GithubHandler {
             }
           }`;
 
-        const nextQuery = `query IsslesTitle($owner: String!,$repo: String!, $count: Int!, $endCursor: String!,$label: String!) {
-            repository(name: $repo, owner: $owner) {
+        const nextQuery = `query IsslesTitle(`+owner+`: String!,`+repo+`: String!, $count: Int!, $endCursor: String!,$label: String!) {
+            repository(name: `+repo+`, owner: `+owner+`) {
               issues(first: $count,after: $endCursor,filterBy: {labels: [$label], states: OPEN}) {
                 edges {
                   node {
