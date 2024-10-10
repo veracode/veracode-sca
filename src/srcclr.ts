@@ -132,8 +132,6 @@ export async function runAction (options: Options)  {
             const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, artefactOptions)
 
 
-
-
             core.info('Finish command');
          });
 
@@ -198,12 +196,9 @@ export async function runAction (options: Options)  {
                 const artefactOptions = {
                     continueOnError: true
                 }
+
                 
                 const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, artefactOptions)
-            
-
-
-
 
 
                 //Pull request decoration
@@ -244,9 +239,6 @@ export async function runAction (options: Options)  {
                     }
 
                 }
-
-
-
 
                 // if scan was set to fail the pipeline should fail and show a summary of the scan results
                 if ( code != null && code > 0 ){
