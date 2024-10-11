@@ -254,7 +254,7 @@ export async function runAction (options: Options)  {
 
 
                 
-                    //we dont need a proxy for the internal GitHub requests upload
+                    //we dont need a proxy for the internal GitHub requests
                     // Store current proxy environment variables
                     const httpProxy = process.env.HTTP_PROXY
                     const httpsProxy = process.env.HTTPS_PROXY
