@@ -121,6 +121,17 @@ const syncExistingOpenIssues = async (options:any) => {
                     var pr_link = `Veracode issue link to PR: https://github.com/`+owner+`/`+repo+`/pull/`+pr_commentID
 
                     console.log('Adding PR to the issue now.')
+
+                    //we dont need a proxy for internal GitHub requests
+                    // Store current proxy environment variables
+                    const httpProxy = process.env.HTTP_PROXY
+                    const httpsProxy = process.env.HTTPS_PROXY
+                    const noProxy = process.env.NO_PROXY
+
+                    // Unset proxy environment variables
+                    delete process.env.HTTP_PROXY
+                    delete process.env.HTTPS_PROXY
+                    delete process.env.NO_PROXY
                         
                     await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
@@ -133,6 +144,10 @@ const syncExistingOpenIssues = async (options:any) => {
                             "body": pr_link
                         }
                     })
+                    // Restore proxy environment variables
+                    if (httpProxy) process.env.HTTP_PROXY = httpProxy
+                    if (httpsProxy) process.env.HTTPS_PROXY = httpsProxy
+                    if (noProxy) process.env.NO_PROXY = noProxy
                 }
             }
             else {
@@ -153,6 +168,18 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     console.log('Adding PR to the issue now.')
                         
+
+                    //we dont need a proxy for internal GitHub requests
+                    // Store current proxy environment variables
+                    const httpProxy = process.env.HTTP_PROXY
+                    const httpsProxy = process.env.HTTPS_PROXY
+                    const noProxy = process.env.NO_PROXY
+
+                    // Unset proxy environment variables
+                    delete process.env.HTTP_PROXY
+                    delete process.env.HTTPS_PROXY
+                    delete process.env.NO_PROXY
+
                     await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
@@ -164,6 +191,11 @@ const syncExistingOpenIssues = async (options:any) => {
                             "body": pr_link
                         }
                     })
+
+                    // Restore proxy environment variables
+                    if (httpProxy) process.env.HTTP_PROXY = httpProxy
+                    if (httpsProxy) process.env.HTTPS_PROXY = httpsProxy
+                    if (noProxy) process.env.NO_PROXY = noProxy
                 }
             }
         }

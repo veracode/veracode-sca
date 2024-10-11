@@ -15,6 +15,19 @@ export class GithubHandler {
     public async getVeracodeLabel ()  {
         console.log('getVeracodeLabel - START');
         let veracodeLabel:any = {};
+
+        //we dont need a proxy for GitHub internal requests
+        // Store current proxy environment variables
+        const httpProxy = process.env.HTTP_PROXY
+        const httpsProxy = process.env.HTTPS_PROXY
+        const noProxy = process.env.NO_PROXY
+
+        // Unset proxy environment variables
+        delete process.env.HTTP_PROXY
+        delete process.env.HTTPS_PROXY
+        delete process.env.NO_PROXY
+
+
         try {
             
             veracodeLabel = await this.client.rest
@@ -28,6 +41,13 @@ export class GithubHandler {
             console.log('=======================   ERROR   ===============================');
             console.log(e);    
         }
+
+        // Restore proxy environment variables
+        if (httpProxy) process.env.HTTP_PROXY = httpProxy
+        if (httpsProxy) process.env.HTTPS_PROXY = httpsProxy
+        if (noProxy) process.env.NO_PROXY = noProxy
+
+
         console.log('getVeracodeLabel - END');
         return veracodeLabel;
     }
@@ -45,6 +65,18 @@ export class GithubHandler {
                     description: label.description
                 });
             }
+
+            //we dont need a proxy for GitHub internal requests
+            // Store current proxy environment variables
+            const httpProxy = process.env.HTTP_PROXY
+            const httpsProxy = process.env.HTTPS_PROXY
+            const noProxy = process.env.NO_PROXY
+
+            // Unset proxy environment variables
+            delete process.env.HTTP_PROXY
+            delete process.env.HTTPS_PROXY
+            delete process.env.NO_PROXY
+
             // Creating the base label
             await this.client.rest.issues.createLabel({
                 owner:context.repo.owner,
@@ -53,6 +85,11 @@ export class GithubHandler {
                 color: VERACODE_LABEL.color,
                 description: VERACODE_LABEL.description
             });
+
+             // Restore proxy environment variables
+            if (httpProxy) process.env.HTTP_PROXY = httpProxy
+            if (httpsProxy) process.env.HTTPS_PROXY = httpsProxy
+            if (noProxy) process.env.NO_PROXY = noProxy
 
             //this.client.paginate(this.client.graphql,"");
     
@@ -64,6 +101,18 @@ export class GithubHandler {
     }
 
     public async createIssue(reportedIssue: ReportedLibraryIssue) {
+
+        //we dont need a proxy for GitHub internal requests
+        // Store current proxy environment variables
+        const httpProxy = process.env.HTTP_PROXY
+        const httpsProxy = process.env.HTTPS_PROXY
+        const noProxy = process.env.NO_PROXY
+
+        // Unset proxy environment variables
+        delete process.env.HTTP_PROXY
+        delete process.env.HTTPS_PROXY
+        delete process.env.NO_PROXY
+
         return await this.client.rest.issues.create({
             owner:context.repo.owner,
             repo:context.repo.repo,
@@ -71,6 +120,11 @@ export class GithubHandler {
             body:reportedIssue.description,
             labels: reportedIssue.labels
         });
+
+         // Restore proxy environment variables
+         if (httpProxy) process.env.HTTP_PROXY = httpProxy
+         if (httpsProxy) process.env.HTTPS_PROXY = httpsProxy
+         if (noProxy) process.env.NO_PROXY = noProxy
     }
 
     public async listExistingOpenIssues() {
@@ -115,6 +169,19 @@ export class GithubHandler {
                 number: number
             }
         }> = [];
+
+
+        //we dont need a proxy for GitHub internal requests
+        // Store current proxy environment variables
+        const httpProxy = process.env.HTTP_PROXY
+        const httpsProxy = process.env.HTTPS_PROXY
+        const noProxy = process.env.NO_PROXY
+
+        // Unset proxy environment variables
+        delete process.env.HTTP_PROXY
+        delete process.env.HTTPS_PROXY
+        delete process.env.NO_PROXY
+
         try {
             let issuesRes: any = await this.client.graphql({
                 headers: {
@@ -150,6 +217,12 @@ export class GithubHandler {
                 console.log('=======================   ERROR   ===============================');
                 console.log(e);
         }
+
+        // Restore proxy environment variables
+        if (httpProxy) process.env.HTTP_PROXY = httpProxy
+        if (httpsProxy) process.env.HTTPS_PROXY = httpsProxy
+        if (noProxy) process.env.NO_PROXY = noProxy
+
         console.log('getIssues - END');
         return issues;
     }

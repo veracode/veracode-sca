@@ -22,16 +22,4 @@ const options: Options = {
     
 }
 
-//we dont need a proxy for the artifact upload
-// Store current proxy environment variables
-const httpProxy = process.env.HTTP_PROXY
-const httpsProxy = process.env.HTTPS_PROXY
-const noProxy = process.env.NO_PROXY
-
-// Unset proxy environment variables
-delete process.env.HTTP_PROXY
-delete process.env.HTTPS_PROXY
-delete process.env.NO_PROXY
-                
-
 runAction(options);
