@@ -171,16 +171,22 @@ export class GithubHandler {
         }> = [];
 
 
-        //we dont need a proxy for GitHub internal requests
+        //we dont need a proxy for the artifact upload
         // Store current proxy environment variables
-        const httpProxy = process.env.HTTP_PROXY
-        const httpsProxy = process.env.HTTPS_PROXY
-        const noProxy = process.env.NO_PROXY
+        const HTTP_PROXY = process.env.HTTP_PROXY
+        const HTTPS_PROXY = process.env.HTTPS_PROXY
+        const NO_PROXY = process.env.NO_PROXY
+        const http_proxy = process.env.http_proxy
+        const https_proxy = process.env.https_proxy
+        const no_proxy = process.env.no_proxy
 
         // Unset proxy environment variables
         delete process.env.HTTP_PROXY
         delete process.env.HTTPS_PROXY
         delete process.env.NO_PROXY
+        delete process.env.http_proxy
+        delete process.env.https_proxy
+        delete process.env.no_proxy
 
         try {
             let issuesRes: any = await this.client.graphql({
@@ -219,9 +225,12 @@ export class GithubHandler {
         }
 
         // Restore proxy environment variables
-        if (httpProxy) process.env.HTTP_PROXY = httpProxy
-        if (httpsProxy) process.env.HTTPS_PROXY = httpsProxy
-        if (noProxy) process.env.NO_PROXY = noProxy
+        if (HTTP_PROXY) process.env.HTTP_PROXY = HTTP_PROXY
+        if (HTTPS_PROXY) process.env.HTTPS_PROXY = HTTPS_PROXY
+        if (NO_PROXY) process.env.NO_PROXY = NO_PROXY
+        if (http_proxy) process.env.http_proxy = http_proxy
+        if (https_proxy) process.env.https_proxy = https_proxy
+        if (no_proxy) process.env.no_proxy = no_proxy
 
         console.log('getIssues - END');
         return issues;
