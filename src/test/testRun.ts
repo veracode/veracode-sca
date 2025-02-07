@@ -17,7 +17,8 @@ const options: Options = {
     allowDirty: false,
     recursive:false,
     "skip-vms":false,
-    "no-graphs":false
+    "no-graphs":false,
+    artifactname: 'srcclr'
 }
 
 runAction(options);

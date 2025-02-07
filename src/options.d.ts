@@ -12,7 +12,8 @@ export interface Options {
     recursive:boolean,
     "skip-vms":boolean,
     "no-graphs":boolean,
-    "skip-collectors": Array<string>
+    "skip-collectors": Array<string>,
+    artifactname: string
 }
 
 
