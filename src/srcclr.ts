@@ -117,9 +117,13 @@ export async function runAction (options: Options)  {
 
             //store output files as artifacts
             core.info('Store json Results as Artifact')
+            let artifactname = 'Veracode Agent Based SCA Results';
+            if ( options.artifactname != null && options.artifactname.length > 0 ){
+                artifactname = 'Veracode Agent Based SCA Results - '+options.artifactname;
+            }
             const { DefaultArtifactClient } = require('@actions/artifact');
             const artifactClient = new DefaultArtifactClient();
-            const artifactName = 'Veracode Agent Based SCA Results'+options.artifactname;
+            const artifactName = artifactname
             const files = [
                 'scaResults.json'
             ]
