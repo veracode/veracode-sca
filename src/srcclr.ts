@@ -199,7 +199,7 @@ export async function runAction (options: Options)  {
                 const artifactClient = new DefaultArtifactClient();
                 const artifactName = artifactname
                 const files = [
-                    'scaResults.json'
+                    'scaResults.txt'
                 ]
                 
                 const rootDirectory = process.cwd()
