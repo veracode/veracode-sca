@@ -65,9 +65,11 @@ Disable this for now */
               output = `${output}${data}`;
           });
             
+/* Disable this for now  
           execution.stderr!.on('data', (data) => {
               core.error(`stderr: ${data}`);
           });
+Disable this for now */   
 
           execution.on('close', async (code) => {
             core.info('Create issue "true" - on close')
