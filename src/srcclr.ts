@@ -149,17 +149,15 @@ export async function runAction (options: Options)  {
                 shell:false
               });
 
+/* Disable this for now              
             execution.on('error', (data) => {
                 core.error(data);
             })
+Disable this for now */                
                     
             let output: string = '';
             execution.stdout!.on('data', (data) => {
                 output = `${output}${data}`;
-            });
-                
-            execution.stderr!.on('data', (data) => {
-                core.error(`stderr: ${data}`);
             });
     
             execution.on('close', async (code) => {
