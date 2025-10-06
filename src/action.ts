@@ -18,8 +18,8 @@ const options: Options = {
     "skip-vms": core.getBooleanInput('skip-vms'),
     "no-graphs": core.getBooleanInput('no-graphs'),
     recursive: core.getBooleanInput('recursive'),
-    "skip-collectors": core.getInput('skip-collectors').split(',')
-    
+    "skip-collectors": core.getInput('skip-collectors').split(','),
+    platformType: core.getInput('platformType'),
 }
 
 runAction(options);
