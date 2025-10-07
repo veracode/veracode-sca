@@ -13,6 +13,7 @@ export interface Options {
     "skip-vms":boolean,
     "no-graphs":boolean,
     "skip-collectors": Array<string>
+    platformType: string
 }
 
 
