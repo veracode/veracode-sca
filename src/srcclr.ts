@@ -89,7 +89,8 @@ export async function runAction (options: Options)  {
                 summary_message = `Veracode SCA Scan finished with exit code: ${code}. Please review created and linked issues`
 
                 try {
-                    const octokit = github.getOctokit(options.github_token);
+                    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+                    const octokit = github.getOctokit(options.github_token, { baseUrl });
         
                     const { data: comment } = await octokit.rest.issues.createComment({
                         owner: repo[0],
@@ -248,7 +249,8 @@ export async function runAction (options: Options)  {
                 
 
                     try {
-                        const octokit = github.getOctokit(options.github_token);
+                        const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+                        const octokit = github.getOctokit(options.github_token, { baseUrl });
             
                         const { data: comment } = await octokit.rest.issues.createComment({
                             owner: repo[0],
