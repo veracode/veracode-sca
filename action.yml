@@ -57,6 +57,10 @@ inputs:
     description: 'Specifies the platform environment type — use CLOUD for GitHub.com or ENTERPRISE for GitHub Enterprise Server (GHES).'
     default: 'CLOUD'
     required: false
+  breakBuildOnPolicyFindings:
+    description: "Break the build based on the Policy Findings"
+    required: false
+    default: "false"
 runs:
   using: 'node20'
   main: 'dist/index.js'
