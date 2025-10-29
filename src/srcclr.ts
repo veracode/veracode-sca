@@ -267,8 +267,8 @@ export async function runAction (options: Options)  {
 
 
                 // if scan was set to fail the pipeline should fail and show a summary of the scan results
-                if ( code != null && code > 0 ){
-                    let summary_info = "Veraocde SCA Scan failed with exit code "+code+"\n"+output
+                if ( code != null && code > 0 && (options.breakBuildOnPolicyFindings == 'true')){
+                    let summary_info = "Veraocde SCA Scan failed with exit code "+code+"\n"
                     core.setFailed(summary_info)
                 }
                 //run(options,core.info);

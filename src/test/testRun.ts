@@ -18,7 +18,8 @@ const options: Options = {
     recursive:false,
     "skip-vms":false,
     "no-graphs":false,
-    platformType:'CLOUD'
+    platformType:'CLOUD',
+    breakBuildOnPolicyFindings:'false'
 }
 
 runAction(options);
