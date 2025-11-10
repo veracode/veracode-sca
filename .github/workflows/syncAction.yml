@@ -31,8 +31,8 @@ steps:
   - name: Create branch and push changes
     run: |
       cd ghes-actions-integration
-      git config user.name "santhoshVC92"
-      git config user.email "skesavan@veracode.com"
+      git config user.name "veracode"
+      git config user.email "user@veracode.com"
       BRANCH_NAME="sync-sca-$(date +%s)"
       git checkout -b $BRANCH_NAME
       git add actions
