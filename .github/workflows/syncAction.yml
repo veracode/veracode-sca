@@ -1,0 +1,64 @@
+name: Sync Action into Veracode
+on:
+  push:
+    tags:
+      - v**
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    name: Sync Veracode SCA Repo
+    
+steps:
+  - name: Checkout veracode-sca repo
+    uses: actions/checkout@v4
+    with:
+      path: veracode-sca
+
+  - name: Checkout ghes-actions-integration repo
+    uses: actions/checkout@v4
+    with:
+      repository: veracode/ghes-actions-integration
+      token: ${{ secrets.PAT_TOKEN }}
+      path: ghes-actions-integration
+      persist-credentials: false
+
+  - name: Copy dist and action.yml files
+    run: |
+      cp -r veracode-sca/dist ghes-actions-integration/actions/sca-scan/
+      cp veracode-sca/action.yml ghes-actions-integration/actions/sca-scan/
+
+  - name: Create branch and push changes
+    run: |
+      cd ghes-actions-integration
+      git config user.name "santhoshVC92"
+      git config user.email "skesavan@veracode.com"
+      BRANCH_NAME="sync-sca-$(date +%s)"
+      git checkout -b $BRANCH_NAME
+      git add actions
+      
+      # Only commit and push if there are changes
+      if ! git diff --cached --quiet; then
+        git commit -m "Sync Veracode SCA dist and action.yml"
+        git push <https://x-access-token:${{> secrets.PAT_TOKEN }}@github.com/veracode/ghes-actions-integration.git $BRANCH_NAME
+        echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+        echo "CHANGES_MADE=true" >> $GITHUB_ENV
+      else
+        echo "No changes to commit"
+        echo "CHANGES_MADE=false" >> $GITHUB_ENV
+      fi
+
+  - name: Create Pull Request with GitHub CLI
+    if: env.CHANGES_MADE == 'true'
+    run: |
+      gh pr create \\
+        --repo veracode/ghes-actions-integration \\
+        --base main \\
+        --head ${{ env.BRANCH_NAME }} \\
+        --title "Sync latest changes from veracode-sca repository" \\
+        --body "Sync from veracode-sca repository
+        
+        - Updated dist folder
+        - Updated action.yml file"
+    env:
+      GH_TOKEN: ${{ secrets.PAT_TOKEN }}
