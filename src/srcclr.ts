@@ -44,7 +44,7 @@ export async function runAction (options: Options)  {
         const commandOutput = options.createIssues ? `--json=${SCA_OUTPUT_FILE}` : '';
         extraCommands = `${extraCommands}${options.recursive ? '--recursive ' : ''}${options.quick ? '--quick ' : ''}${options.allowDirty ? '--allow-dirty ' : ''}${options.updateAdvisor ? '--update-advisor ' : ''}${skipVMS ? '--skip-vms ' : ''}${noGraphs ? '--no-graphs ' : ''}${options.debug ? '--debug ' : ''}${skipCollectorsAttr}`;
         if (runnerOS == 'Windows') {
-            const powershellCommand = `"Invoke-WebRequest https://sca-downloads.veracode.com/ci.ps1 -OutFile $env:TEMP\\ab.ps1; & $env:TEMP\\ab.ps1 -s -- scan ${extraCommands} ${commandOutput}"`
+            const powershellCommand = `"Invoke-WebRequest https://sca-downloads.veracode.com/ci.ps1 -OutFile $env:TEMP\\ci.ps1; & $env:TEMP\\ci.ps1 -s -- scan ${extraCommands} ${commandOutput}"`
             if (options.createIssues) {
                 core.info('Starting the scan')
 
@@ -59,7 +59,7 @@ export async function runAction (options: Options)  {
                 })
 
                 let output: string = '';
-                execution.stdout!.on('data', (data) => {
+                execution.on('data', (data) => {
                     output = `${output}${data}`;
                 });
 
