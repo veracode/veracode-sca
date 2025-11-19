@@ -149,7 +149,9 @@ export async function runAction (options: Options)  {
                     powershellCommand
                   ];
                 const execution = spawn('powershell.exe', args, {
-                    shell: false
+                    stdio: 'inherit',   // ← raw passthrough
+  shell: false
+                    
                 });
 
                 execution.on('error', (data) => {
@@ -157,7 +159,7 @@ export async function runAction (options: Options)  {
                 })
 
                 let output: string = '';
-                execution.stdout!.on('data', (data) => {
+                execution.on('data', (data) => {
                     output = `${output}${data}`;
                 });
 
