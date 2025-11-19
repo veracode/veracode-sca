@@ -60,6 +60,7 @@ export async function runAction (options: Options)  {
                 let output: string = '';
                 execution.stdout.on('data', (data) => {
                     output = `${output}${data}`;
+                    core.info(output)
                 });
 
                 execution.on('close', async (code) => {
