@@ -150,7 +150,7 @@ export async function runAction (options: Options)  {
                   ];
                 const execution = spawn('powershell.exe', args, {
                     stdio: 'inherit',   // ← raw passthrough
-  shell: false
+                    shell: false
                     
                 });
 
@@ -161,10 +161,6 @@ export async function runAction (options: Options)  {
                 let output: string = '';
                 execution.on('data', (data) => {
                     output = `${output}${data}`;
-                });
-
-                execution.stderr!.on('data', (data) => {
-                    core.error(`stderr: ${data}`);
                 });
 
                 execution.on('close', async (code) => {
@@ -272,7 +268,8 @@ export async function runAction (options: Options)  {
                     }
                     //run(options,core.info);
                     core.info('Finish command');
-                });
+                }
+            );
             }
         }
         else {
