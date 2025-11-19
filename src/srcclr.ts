@@ -143,9 +143,13 @@ export async function runAction (options: Options)  {
 
             } else {
                 core.info('Command to run: ' + powershellCommand)
-                const execution = spawn('powershell', [
-                    "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", powershellCommand], {
-                    stdio: "pipe",
+                const args: string[] = [
+                    '-NoProfile', // Prevents loading the user profile, for predictability
+                    '-Command',
+                    powershellCommand
+                  ];
+                const execution = spawn('powershell.exe', args, {
+                    stdio: "inherit",
                     shell: false
                 });
 
