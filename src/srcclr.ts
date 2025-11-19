@@ -50,7 +50,7 @@ export async function runAction (options: Options)  {
 
                 const execution = spawn('powershell.exe', [
                     "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", powershellCommand], {
-                    stdio: "inherit"
+                    stdio: "pipe"
                 });
 
                 execution.on('error', (data) => {
@@ -58,7 +58,7 @@ export async function runAction (options: Options)  {
                 })
 
                 let output: string = '';
-                execution.on('data', (data) => {
+                execution.stdout.on('data', (data) => {
                     output = `${output}${data}`;
                 });
 
