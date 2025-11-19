@@ -50,7 +50,7 @@ export async function runAction (options: Options)  {
 
                 const execution = spawn('powershell.exe', [
                     "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", powershellCommand], {
-                    stdio: "pipe"
+                    stdio: "inherit"
                 });
 
                 execution.on('error', (data) => {
@@ -58,9 +58,9 @@ export async function runAction (options: Options)  {
                 })
 
                 let output: string = '';
-                execution.stdout.on('data', (data) => {
+                execution.on('data', (data) => {
                     output = `${output}${data}`;
-                    core.info(output)
+
                 });
 
                 execution.on('close', async (code) => {
@@ -163,7 +163,7 @@ export async function runAction (options: Options)  {
                 });
 
                 execution.on('close', async (code) => {
-                    //core.info(output);
+                    core.info(output);
                     core.info(`Scan finished with exit code:  ${code}`);
 
                     core.info(output)
