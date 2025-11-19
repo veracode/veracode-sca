@@ -149,7 +149,6 @@ export async function runAction (options: Options)  {
                     powershellCommand
                   ];
                 const execution = spawn('powershell.exe', args, {
-                    stdio: "inherit",
                     shell: false
                 });
 
