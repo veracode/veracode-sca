@@ -48,10 +48,10 @@ export async function runAction (options: Options)  {
             if (options.createIssues) {
                 core.info('Starting the scan')
 
-                const execution = spawn('powershell', [
+                const execution = spawn('powershell.exe', [
                     "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", powershellCommand], {
                     stdio: "inherit",
-                    shell: false
+                    shell: true
                 });
 
                 execution.on('error', (data) => {
@@ -61,10 +61,6 @@ export async function runAction (options: Options)  {
                 let output: string = '';
                 execution.on('data', (data) => {
                     output = `${output}${data}`;
-                });
-
-                execution.stderr!.on('data', (data) => {
-                    core.error(`stderr: ${data}`);
                 });
 
                 execution.on('close', async (code) => {
