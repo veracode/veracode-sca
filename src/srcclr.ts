@@ -160,7 +160,7 @@ export async function runAction (options: Options)  {
 
                 let output: string = '';
                 execution.on('data', (data) => {
-                    output = `${output}${data}`;
+                    output = `${output}${data.toString()}`;
                 });
 
                 execution.on('close', async (code) => {
