@@ -3,7 +3,7 @@ import { execSync, spawn } from "child_process";
 
 import * as core from '@actions/core'
 import { Options } from "./options";
-import { SCA_OUTPUT_FILE, run, runText } from "./index";
+import { SCA_OUTPUT_FILE, run, runText, submitDependencySnapshotFromFile } from "./index";
 import * as github from '@actions/github'
 import { env } from "process";
 import { writeFile } from 'fs';
@@ -41,7 +41,7 @@ export async function runAction(options: Options) {
         const noGraphs = options["no-graphs"]
         const skipVMS = options["skip-vms"]
 
-        const commandOutput = options.createIssues ? `--json=${SCA_OUTPUT_FILE}` : '';
+        const commandOutput = (options.createIssues || options.dependabot_alerts) ? `--json=${SCA_OUTPUT_FILE}` : '';
         extraCommands = `${extraCommands}${options.recursive ? '--recursive ' : ''}${options.quick ? '--quick ' : ''}${options.allowDirty ? '--allow-dirty ' : ''}${options.updateAdvisor ? '--update-advisor ' : ''}${skipVMS ? '--skip-vms ' : ''}${noGraphs ? '--no-graphs ' : ''}${options.debug ? '--debug ' : ''}${skipCollectorsAttr}`;
 
         if (runnerOS == 'Windows') {
@@ -230,6 +230,20 @@ export async function runAction(options: Options) {
                         core.info(error);
                     }
 
+                }
+
+                // Submit dependency snapshot if dependabot_alerts is enabled
+                if (options.dependabot_alerts) {
+                    core.info('Generating dependency snapshot for Dependabot alerts');
+                    try {
+                        await submitDependencySnapshotFromFile(options);
+                        core.info('Successfully submitted dependency snapshot to GitHub');
+                    } catch (error: any) {
+                        core.warning(`Failed to submit dependency snapshot: ${error.message}`);
+                        if (options.debug) {
+                            core.info(`Error details: ${JSON.stringify(error)}`);
+                        }
+                    }
                 }
 
                 //run(options,core.info);
@@ -465,6 +479,21 @@ export async function runAction(options: Options) {
                         let summary_info = "Veraocde SCA Scan failed with exit code " + code + "\n"
                         core.setFailed(summary_info)
                     }
+
+                    // Submit dependency snapshot if dependabot_alerts is enabled
+                    if (options.dependabot_alerts) {
+                        core.info('Generating dependency snapshot for Dependabot alerts');
+                        try {
+                            await submitDependencySnapshotFromFile(options);
+                            core.info('Successfully submitted dependency snapshot to GitHub');
+                        } catch (error: any) {
+                            core.warning(`Failed to submit dependency snapshot: ${error.message}`);
+                            if (options.debug) {
+                                core.info(`Error details: ${JSON.stringify(error)}`);
+                            }
+                        }
+                    }
+
                     //run(options,core.info);
                     core.info('Finish command');
                 });

@@ -20,7 +20,8 @@ const options: Options = {
     recursive: core.getBooleanInput('recursive'),
     "skip-collectors": core.getInput('skip-collectors').split(','),
     platformType: core.getInput('platformType'),
-    breakBuildOnPolicyFindings: core.getInput('breakBuildOnPolicyFindings')
+    breakBuildOnPolicyFindings: core.getInput('breakBuildOnPolicyFindings'),
+    dependabot_alerts: core.getBooleanInput('dependabot_alerts')
 }
 
 runAction(options);

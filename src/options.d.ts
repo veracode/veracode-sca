@@ -14,7 +14,8 @@ export interface Options {
     "no-graphs":boolean,
     "skip-collectors": Array<string>
     platformType: string,
-    breakBuildOnPolicyFindings: string
+    breakBuildOnPolicyFindings: string,
+    dependabot_alerts: boolean
 }
 
 

@@ -61,6 +61,10 @@ inputs:
     description: "Break the build based on the Policy Findings"
     required: false
     default: "false"
+  dependabot_alerts:
+    description: "Generate and submit dependency snapshot to GitHub for Dependabot alerts"
+    required: false
+    default: "false"
 runs:
   using: 'node20'
   main: 'dist/index.js'

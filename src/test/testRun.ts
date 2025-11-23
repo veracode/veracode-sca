@@ -19,7 +19,8 @@ const options: Options = {
     "skip-vms":false,
     "no-graphs":false,
     platformType:'CLOUD',
-    breakBuildOnPolicyFindings:'false'
+    breakBuildOnPolicyFindings:'false',
+    dependabot_alerts: false
 }
 
 runAction(options);
