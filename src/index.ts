@@ -1,5 +1,5 @@
 //import {getOctokit,context} from '@actions/github';
-import { readFileSync, existsSync} from 'fs';
+import { readFileSync, existsSync, writeFileSync} from 'fs';
 import { Options } from './options';
 import { LibraryIssuesCollection, ReportedLibraryIssue, SCALibrary, SCAVulnerability, SrcClrJson } from './srcclr.d';
 import { Label, SEVERITY_LABELS, VERACODE_LABEL } from './labels';
@@ -323,17 +323,62 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any | null {
     const manifests: { [key: string]: any } = {};
     
     // Process all libraries
+    const totalLibraries = Object.keys(libraries).length;
+    core.info(`Processing ${totalLibraries} libraries from Veracode SCA scan`);
+    
     for (const libId in libraries) {
         const lib: SCALibrary = libraries[libId];
         
+        // Debug: Log library being processed
+        if (core.isDebug()) {
+            core.info(`Processing library: ${lib.name} (ID: ${libId})`);
+            core.info(`  - Coordinate1: ${lib.coordinate1 || 'N/A'}, Coordinate2: ${lib.coordinate2 || 'N/A'}`);
+            core.info(`  - Versions: ${lib.versions.map(v => v.version).join(', ')}`);
+        }
+        
         // Find vulnerabilities for this library to determine language
         let language = 'generic';
+        let foundLanguage = false;
         for (const vuln of vulnerabilities) {
             const libref = vuln.libraries[0]._links.ref;
             const vulnLibId = libref.split('/')[4];
             if (vulnLibId === libId) {
                 language = (vuln.language && vuln.language.trim()) || 'generic';
+                foundLanguage = true;
+                if (core.isDebug()) {
+                    core.info(`  - Found language from vulnerability: ${language}`);
+                }
                 break;
+            }
+        }
+        
+        // If no vulnerability found for this library, try to infer language from library name/coordinates
+        if (!foundLanguage) {
+            // Try to infer from Maven coordinates
+            if (lib.coordinate1 && lib.coordinate2) {
+                language = 'java';
+                if (core.isDebug()) {
+                    core.info(`  - Inferred language 'java' from Maven coordinates`);
+                }
+            } else {
+                // Check library name for common patterns
+                const libNameLower = lib.name.toLowerCase();
+                if (libNameLower.includes('package.json') || libNameLower.includes('node_modules') || libNameLower.includes('npm')) {
+                    language = 'javascript';
+                } else if (libNameLower.includes('requirements') || libNameLower.includes('pip') || libNameLower.includes('python')) {
+                    language = 'python';
+                } else if (libNameLower.includes('gem') || libNameLower.includes('ruby')) {
+                    language = 'ruby';
+                } else if (libNameLower.includes('composer') || libNameLower.includes('php')) {
+                    language = 'php';
+                } else if (libNameLower.includes('go.mod') || libNameLower.includes('golang')) {
+                    language = 'go';
+                } else {
+                    language = 'generic';
+                }
+                if (core.isDebug()) {
+                    core.info(`  - Inferred language '${language}' from library name/pattern`);
+                }
             }
         }
         
@@ -360,6 +405,9 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any | null {
                 },
                 resolved: {}
             };
+            if (core.isDebug()) {
+                core.info(`Created new manifest: ${manifestKey} -> ${manifestFilePath}`);
+            }
         }
         
         // Add each version of the library
@@ -368,11 +416,22 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any | null {
             // Use a simpler key that's valid for JSON
             const purlKey = Buffer.from(purl).toString('base64').replace(/[+/=]/g, '_');
             
+            if (core.isDebug()) {
+                core.info(`  - Adding dependency: ${lib.name}@${versionInfo.version} -> ${purl}`);
+            }
+            
             manifests[manifestKey].resolved[purlKey] = {
                 package_url: purl,
                 dependencies: []
             };
         }
+    }
+    
+    // Debug: Log summary of processed libraries
+    core.info(`Processed ${totalLibraries} libraries into ${Object.keys(manifests).length} manifest(s)`);
+    for (const manifestKey in manifests) {
+        const depCount = Object.keys(manifests[manifestKey].resolved).length;
+        core.info(`  - ${manifestKey}: ${depCount} dependencies`);
     }
     
     // Ensure all manifests have valid names and at least one has dependencies
@@ -442,6 +501,15 @@ async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson
         return;
     }
     
+    // Save snapshot to file for artifact upload
+    const snapshotFileName = 'dependabot-snapshot.json';
+    try {
+        writeFileSync(snapshotFileName, JSON.stringify(snapshot, null, 2));
+        core.info(`Saved dependency snapshot to ${snapshotFileName}`);
+    } catch (error: any) {
+        core.warning(`Failed to save snapshot file: ${error.message}`);
+    }
+    
     if (options.debug) {
         core.info(`Dependency snapshot: ${JSON.stringify(snapshot, null, 2)}`);
         core.info(`Manifests in snapshot: ${Object.keys(snapshot.manifests).join(', ')}`);
@@ -449,6 +517,15 @@ async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson
             const manifest = snapshot.manifests[manifestKey];
             const depCount = Object.keys(manifest.resolved || {}).length;
             core.info(`  - ${manifestKey}: ${manifest.name} (${depCount} dependencies) from ${manifest.file.source_location}`);
+            
+            // Debug: List all package URLs in this manifest
+            if (core.isDebug()) {
+                core.info(`    Package URLs in ${manifestKey}:`);
+                for (const purlKey in manifest.resolved) {
+                    const dep = manifest.resolved[purlKey];
+                    core.info(`      - ${dep.package_url}`);
+                }
+            }
         }
     }
     
@@ -474,6 +551,42 @@ async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson
             const manifest = snapshot.manifests[manifestKey];
             const depCount = Object.keys(manifest.resolved || {}).length;
             core.info(`  Manifest: ${manifest.name} (${depCount} dependencies) - File: ${manifest.file.source_location}`);
+            
+            // Check for specific libraries like "nocivo"
+            const allPackageUrls: string[] = [];
+            for (const purlKey in manifest.resolved) {
+                allPackageUrls.push(manifest.resolved[purlKey].package_url);
+            }
+            const nocivoDeps = allPackageUrls.filter(url => url.toLowerCase().includes('nocivo'));
+            if (nocivoDeps.length > 0) {
+                core.info(`    Found ${nocivoDeps.length} nocivo dependency(ies): ${nocivoDeps.join(', ')}`);
+            }
+        }
+        
+        // Upload snapshot as artifact
+        try {
+            const { DefaultArtifactClient } = require('@actions/artifact');
+            const artifactV1 = require('@actions/artifact-v1');
+            let artifactClient;
+
+            if (options?.platformType === 'ENTERPRISE') {
+                artifactClient = artifactV1.create();
+                core.info(`Initialized the artifact object using version V1.`);
+            } else {
+                artifactClient = new DefaultArtifactClient();
+                core.info(`Initialized the artifact object using version V2.`);
+            }
+            const artifactName = 'Veracode Dependabot Snapshot';
+            const files = [snapshotFileName];
+            const rootDirectory = process.cwd();
+            const artefactOptions = {
+                continueOnError: true
+            };
+
+            const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, artefactOptions);
+            core.info(`Uploaded dependency snapshot as artifact: ${artifactName}`);
+        } catch (artifactError: any) {
+            core.warning(`Failed to upload snapshot as artifact: ${artifactError.message}`);
         }
         
         core.info(`Note: Dependencies are merged with GitHub's native dependency graph. ` +
