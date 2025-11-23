@@ -303,8 +303,9 @@ function generatePackageUrl(lib: SCALibrary, version: string, language: string):
 
 /**
  * Generates a GitHub dependency snapshot from Veracode SCA results
+ * Returns null if no libraries are found
  */
-function generateDependencySnapshot(scaResJson: SrcClrJson): any {
+function generateDependencySnapshot(scaResJson: SrcClrJson): any | null {
     const context = github.context;
     const sha = context.sha || process.env.GITHUB_SHA || '';
     const ref = context.ref || process.env.GITHUB_REF || 'refs/heads/main';
@@ -331,17 +332,24 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any {
             const libref = vuln.libraries[0]._links.ref;
             const vulnLibId = libref.split('/')[4];
             if (vulnLibId === libId) {
-                language = vuln.language || 'generic';
+                language = (vuln.language && vuln.language.trim()) || 'generic';
                 break;
             }
         }
         
+        // Ensure language is never empty
+        if (!language || language.trim() === '') {
+            language = 'generic';
+        }
+        
         // Create manifest key based on language
-        const manifestKey = `veracode-${language.toLowerCase()}`;
+        const manifestKey = `veracode-${language.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
         
         if (!manifests[manifestKey]) {
+            // Ensure name is never blank - use a descriptive name
+            const manifestName = `Veracode SCA - ${language.charAt(0).toUpperCase() + language.slice(1)}`;
             manifests[manifestKey] = {
-                name: `Veracode SCA - ${language}`,
+                name: manifestName,
                 file: {
                     source_location: 'veracode-sca-scan'
                 },
@@ -352,7 +360,8 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any {
         // Add each version of the library
         for (const versionInfo of lib.versions) {
             const purl = generatePackageUrl(lib, versionInfo.version, language);
-            const purlKey = purl.replace(/[@:]/g, '_').replace(/\//g, '_');
+            // Use a simpler key that's valid for JSON
+            const purlKey = Buffer.from(purl).toString('base64').replace(/[+/=]/g, '_');
             
             manifests[manifestKey].resolved[purlKey] = {
                 package_url: purl,
@@ -361,15 +370,21 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any {
         }
     }
     
-    // If no libraries found, create a minimal manifest
+    // Ensure all manifests have valid names and at least one has dependencies
+    // If no libraries found, we shouldn't submit an empty snapshot
+    // But if we have manifests, ensure they all have proper names
+    for (const manifestKey in manifests) {
+        const manifest = manifests[manifestKey];
+        if (!manifest.name || manifest.name.trim() === '') {
+            manifest.name = `Veracode SCA - ${manifestKey.replace('veracode-', '').charAt(0).toUpperCase() + manifestKey.replace('veracode-', '').slice(1)}`;
+        }
+    }
+    
+    // If no libraries found, don't create an empty manifest
+    // GitHub requires at least one dependency in the snapshot
     if (Object.keys(manifests).length === 0) {
-        manifests['veracode-generic'] = {
-            name: 'Veracode SCA - Generic',
-            file: {
-                source_location: 'veracode-sca-scan'
-            },
-            resolved: {}
-        };
+        core.warning('No libraries found in SCA results - skipping dependency snapshot submission');
+        return null;
     }
     
     const snapshot = {
@@ -415,6 +430,12 @@ async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson
     const repo = options.repo;
     
     const snapshot = generateDependencySnapshot(scaResJson);
+    
+    // If no snapshot was generated (no libraries found), skip submission
+    if (!snapshot) {
+        core.info('No dependency snapshot generated - no libraries found in scan results');
+        return;
+    }
     
     if (options.debug) {
         core.info(`Dependency snapshot: ${JSON.stringify(snapshot, null, 2)}`);
