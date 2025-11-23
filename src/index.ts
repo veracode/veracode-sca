@@ -349,8 +349,10 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any | null {
             // Ensure name is never blank - use a descriptive name
             const manifestName = `Veracode SCA - ${language.charAt(0).toUpperCase() + language.slice(1)}`;
             // Use a distinct file path that identifies this as Veracode SCA submission
-            // This helps GitHub show these dependencies separately from native scanning
-            const manifestFilePath = `.veracode-sca/${language.toLowerCase()}-dependencies.json`;
+            // Using a path format that GitHub recognizes for dependency submission
+            // The path should be relative to repository root
+            const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            const manifestFilePath = `.github/veracode-sca/${language.toLowerCase()}-${timestamp}.json`;
             manifests[manifestKey] = {
                 name: manifestName,
                 file: {
@@ -466,6 +468,18 @@ async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson
         
         core.info(`Dependency snapshot submitted successfully. Response status: ${response.status}`);
         core.info(`Submitted ${Object.keys(snapshot.manifests).length} manifest(s) with dependencies from Veracode SCA scan`);
+        
+        // Log manifest details for debugging
+        for (const manifestKey in snapshot.manifests) {
+            const manifest = snapshot.manifests[manifestKey];
+            const depCount = Object.keys(manifest.resolved || {}).length;
+            core.info(`  Manifest: ${manifest.name} (${depCount} dependencies) - File: ${manifest.file.source_location}`);
+        }
+        
+        core.info(`Note: Dependencies are merged with GitHub's native dependency graph. ` +
+                  `If dependencies are already detected by native scanning (e.g., from pom.xml), ` +
+                  `they will appear under the native manifest, not as a separate Veracode manifest. ` +
+                  `Only unique dependencies or vulnerabilities will appear under the Veracode manifest.`);
     } catch (error: any) {
         if (error.status === 403) {
             throw new Error('Permission denied. Ensure the token has write access to dependency graph. Dependabot alerts must be enabled for the repository.');
