@@ -348,10 +348,13 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any | null {
         if (!manifests[manifestKey]) {
             // Ensure name is never blank - use a descriptive name
             const manifestName = `Veracode SCA - ${language.charAt(0).toUpperCase() + language.slice(1)}`;
+            // Use a distinct file path that identifies this as Veracode SCA submission
+            // This helps GitHub show these dependencies separately from native scanning
+            const manifestFilePath = `.veracode-sca/${language.toLowerCase()}-dependencies.json`;
             manifests[manifestKey] = {
                 name: manifestName,
                 file: {
-                    source_location: 'veracode-sca-scan'
+                    source_location: manifestFilePath
                 },
                 resolved: {}
             };
@@ -439,6 +442,12 @@ async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson
     
     if (options.debug) {
         core.info(`Dependency snapshot: ${JSON.stringify(snapshot, null, 2)}`);
+        core.info(`Manifests in snapshot: ${Object.keys(snapshot.manifests).join(', ')}`);
+        for (const manifestKey in snapshot.manifests) {
+            const manifest = snapshot.manifests[manifestKey];
+            const depCount = Object.keys(manifest.resolved || {}).length;
+            core.info(`  - ${manifestKey}: ${manifest.name} (${depCount} dependencies) from ${manifest.file.source_location}`);
+        }
     }
     
     const authToken = `token ${options.github_token}`;
@@ -456,6 +465,7 @@ async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson
         });
         
         core.info(`Dependency snapshot submitted successfully. Response status: ${response.status}`);
+        core.info(`Submitted ${Object.keys(snapshot.manifests).length} manifest(s) with dependencies from Veracode SCA scan`);
     } catch (error: any) {
         if (error.status === 403) {
             throw new Error('Permission denied. Ensure the token has write access to dependency graph. Dependabot alerts must be enabled for the repository.');
