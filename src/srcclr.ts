@@ -10,6 +10,10 @@ import { writeFile } from 'fs';
 import { readFileSync } from 'fs';
 import { writeFileSync } from 'fs';
 
+// Import artifact clients at top level so ncc bundles them
+const { DefaultArtifactClient } = require('@actions/artifact');
+const artifactV1 = require('@actions/artifact-v1');
+
 const runnerOS = process.env.RUNNER_OS;
 const cleanCollectors = (inputArr: Array<string>) => {
     let allowed: Array<string> = [];
@@ -105,8 +109,6 @@ export async function runAction(options: Options) {
 
                 //store output files as artifacts
                 core.info('Store json Results as Artifact')
-                const { DefaultArtifactClient } = require('@actions/artifact');
-                const artifactV1 = require('@actions/artifact-v1');
                 let artifactClient;
 
                 if (options?.platformType === 'ENTERPRISE') {
@@ -168,8 +170,6 @@ export async function runAction(options: Options) {
 
                 //store output files as artifacts
                 core.info('Store txt Results as Artifact')
-                const { DefaultArtifactClient } = require('@actions/artifact');
-                const artifactV1 = require('@actions/artifact-v1');
                 let artifactClient;
 
                 if (options?.platformType === 'ENTERPRISE') {
@@ -325,8 +325,6 @@ export async function runAction(options: Options) {
 
                     //store output files as artifacts
                     core.info('Store json Results as Artifact')
-                    const { DefaultArtifactClient } = require('@actions/artifact');
-                    const artifactV1 = require('@actions/artifact-v1');
                     let artifactClient;
 
                     if (options?.platformType === 'ENTERPRISE') {
@@ -404,8 +402,6 @@ export async function runAction(options: Options) {
 
                     //store output files as artifacts
                     core.info('Store txt Results as Artifact')
-                    const { DefaultArtifactClient } = require('@actions/artifact');
-                    const artifactV1 = require('@actions/artifact-v1');
                     let artifactClient;
 
                     if (options?.platformType === 'ENTERPRISE') {
