@@ -309,6 +309,12 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any {
     const sha = context.sha || process.env.GITHUB_SHA || '';
     const ref = context.ref || process.env.GITHUB_REF || 'refs/heads/main';
     
+    // Generate job ID and correlator for the snapshot
+    // Correlator should be unique per workflow run, job ID should be unique per job
+    const workflowRunId = process.env.GITHUB_RUN_ID || '';
+    const jobId = process.env.GITHUB_JOB || 'veracode-sca';
+    const correlator = `veracode-sca-${workflowRunId}-${jobId}`;
+    
     const libraries = scaResJson.records[0].libraries;
     const vulnerabilities = scaResJson.records[0].vulnerabilities;
     
@@ -370,6 +376,10 @@ function generateDependencySnapshot(scaResJson: SrcClrJson): any {
         version: 0,
         sha: sha,
         ref: ref,
+        job: {
+            id: jobId,
+            correlator: correlator
+        },
         detector: {
             name: 'veracode-sca',
             version: '1.0.8',
