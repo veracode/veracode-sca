@@ -31,3 +31,4 @@ node_modules/
 .DS_Store
 src.zip
 scaResults.txt
+example/

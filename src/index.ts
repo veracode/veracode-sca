@@ -278,6 +278,7 @@ function generatePackageUrl(lib: SCALibrary, version: string, language: string):
     // Map language to purl type
     const typeMap: { [key: string]: string } = {
         'javascript': 'npm',
+        'js': 'npm',  // Veracode uses "JS" for JavaScript
         'java': 'maven',
         'python': 'pypi',
         'ruby': 'gem',
@@ -290,6 +291,16 @@ function generatePackageUrl(lib: SCALibrary, version: string, language: string):
     };
     
     const purlType = typeMap[language.toLowerCase()] || 'generic';
+    
+    // Handle NPM packages - use coordinate1 as package name if available
+    if (purlType === 'npm' && lib.coordinate1) {
+        const packageName = lib.coordinate1.replace(/[^a-z0-9._-]/gi, '');
+        const purl = `pkg:npm/${packageName}@${ver}`;
+        if (core.isDebug()) {
+            core.info(`    Generated NPM package URL from coordinate1: ${purl}`);
+        }
+        return purl;
+    }
     
     // Handle Maven coordinates if available
     if (purlType === 'maven' && lib.coordinate1 && lib.coordinate2) {
