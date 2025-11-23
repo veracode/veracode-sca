@@ -7,9 +7,13 @@ const ISSUES_PULL_COUNT = 100;
 export class GithubHandler {
 
     private client:any;
+    private owner: string;
+    private repo: string;
 
-    constructor(private token:string) {
-        this.client = getOctokit(token); 
+    constructor(private token:string, owner?: string, repo?: string) {
+        this.client = getOctokit(token);
+        this.owner = owner || context.repo.owner;
+        this.repo = repo || context.repo.repo;
     }
 
     public async getVeracodeLabel ()  {
@@ -19,8 +23,8 @@ export class GithubHandler {
             
             veracodeLabel = await this.client.rest
                 .issues.getLabel({
-                    owner:context.repo.owner,
-                    repo:context.repo.repo,
+                    owner: this.owner,
+                    repo: this.repo,
                     name:VERACODE_LABEL.name
             });
             console.log('Veracode Labels already exist');
@@ -38,8 +42,8 @@ export class GithubHandler {
             // Creating the severity labels
             for (var label of Object.values(SEVERITY_LABELS)) {
               await this.client.rest.issues.createLabel({
-                    owner:context.repo.owner,
-                    repo:context.repo.repo,
+                    owner: this.owner,
+                    repo: this.repo,
                     name: label.name,
                     color: label.color,
                     description: label.description
@@ -47,8 +51,8 @@ export class GithubHandler {
             }
             // Creating the base label
             await this.client.rest.issues.createLabel({
-                owner:context.repo.owner,
-                repo:context.repo.repo,
+                owner: this.owner,
+                repo: this.repo,
                 name: VERACODE_LABEL.name,
                 color: VERACODE_LABEL.color,
                 description: VERACODE_LABEL.description
@@ -65,8 +69,8 @@ export class GithubHandler {
 
     public async createIssue(reportedIssue: ReportedLibraryIssue) {
         return await this.client.rest.issues.create({
-            owner:context.repo.owner,
-            repo:context.repo.repo,
+            owner: this.owner,
+            repo: this.repo,
             title:reportedIssue.title,
             body:reportedIssue.description,
             labels: reportedIssue.labels
@@ -122,8 +126,8 @@ export class GithubHandler {
                 },
                 query,
                 count: ISSUES_PULL_COUNT,
-                organization: context.repo.owner,
-                repo: context.repo.repo,
+                organization: this.owner,
+                repo: this.repo,
                 label: VERACODE_LABEL.name
             });
              
@@ -140,8 +144,8 @@ export class GithubHandler {
                     query:nextQuery,
                     count: ISSUES_PULL_COUNT,
                     endCursor,
-                    organization: context.repo.owner,
-                    repo: context.repo.repo,
+                    organization: this.owner,
+                    repo: this.repo,
                     label: VERACODE_LABEL.name
                 });
                 issues = issues.concat(issuesRes.repository.issues.edges);

@@ -43,7 +43,7 @@ export async function run(options:Options, msgFunc: (msg: string) => void) {
             addIssueToLibrary(libId,lib,details);
         });
 
-    githubHandler = new GithubHandler(options.github_token);
+    githubHandler = new GithubHandler(options.github_token, options.owner, options.repo);
 
     if (Object.keys(librariesWithIssues).length>0) {
         await verifyLabels();
@@ -130,8 +130,8 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     var authToken = 'token ' + options.github_token
 
-                    const owner = github.context.repo.owner;
-                    const repo = github.context.repo.repo;
+                    const owner = options.owner;
+                    const repo = options.repo;
                     var pr_link = `Veracode issue link to PR: https://github.com/`+owner+`/`+repo+`/pull/`+pr_commentID
 
                     console.log('Adding PR to the issue now.')
@@ -161,8 +161,8 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     var authToken = 'token ' + options.github_token
 
-                    const owner = github.context.repo.owner;
-                    const repo = github.context.repo.repo;
+                    const owner = options.owner;
+                    const repo = options.repo;
                     var pr_link = `Veracode issue link to PR: https://github.com/`+owner+`/`+repo+`/pull/`+pr_commentID
 
                     console.log('Adding PR to the issue now.')
@@ -396,13 +396,13 @@ export async function submitDependencySnapshotFromFile(options: Options): Promis
     await submitDependencySnapshot(options, scaResJson);
 }
 
+
 /**
  * Submits dependency snapshot to GitHub Dependency Submission API
  */
 async function submitDependencySnapshot(options: Options, scaResJson: SrcClrJson): Promise<void> {
-    const context = github.context;
-    const owner = context.repo.owner;
-    const repo = context.repo.repo;
+    const owner = options.owner;
+    const repo = options.repo;
     
     const snapshot = generateDependencySnapshot(scaResJson);
     

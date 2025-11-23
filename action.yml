@@ -65,6 +65,12 @@ inputs:
     description: "Generate and submit dependency snapshot to GitHub for Dependabot alerts"
     required: false
     default: "false"
+  repo_owner:
+    description: "Repository owner. Defaults to the current repository owner"
+    required: false
+  repo_name:
+    description: "Repository name. Defaults to the current repository name"
+    required: false
 runs:
   using: 'node20'
   main: 'dist/index.js'

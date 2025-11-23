@@ -15,7 +15,9 @@ export interface Options {
     "skip-collectors": Array<string>
     platformType: string,
     breakBuildOnPolicyFindings: string,
-    dependabot_alerts: boolean
+    dependabot_alerts: boolean,
+    owner: string,
+    repo: string
 }
 
 

@@ -3,6 +3,7 @@
 import * as core from '@actions/core'
 import { Options } from "./options";
 import {runAction} from './srcclr';
+import * as github from '@actions/github';
 
 const options: Options = {
     quick: core.getBooleanInput('quick'),
@@ -21,7 +22,9 @@ const options: Options = {
     "skip-collectors": core.getInput('skip-collectors').split(','),
     platformType: core.getInput('platformType'),
     breakBuildOnPolicyFindings: core.getInput('breakBuildOnPolicyFindings'),
-    dependabot_alerts: core.getBooleanInput('dependabot_alerts')
+    dependabot_alerts: core.getBooleanInput('dependabot_alerts'),
+    owner: core.getInput('repo_owner') ? core.getInput('repo_owner') : github.context.repo.owner,
+    repo: core.getInput('repo_name') ? core.getInput('repo_name') : github.context.repo.repo
 }
 
 runAction(options);

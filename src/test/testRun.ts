@@ -20,7 +20,9 @@ const options: Options = {
     "no-graphs":false,
     platformType:'CLOUD',
     breakBuildOnPolicyFindings:'false',
-    dependabot_alerts: false
+    dependabot_alerts: false,
+    owner: 'test-owner',
+    repo: 'test-repo'
 }
 
 runAction(options);
