@@ -84,6 +84,11 @@ const syncExistingOpenIssues = async (options:any) => {
     let pullRequest = process.env.GITHUB_REF
     let isPR:any = pullRequest?.indexOf("pull")
 
+    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+    const customRequest = request.defaults({
+        baseUrl
+    });
+
     for (var key in librariesWithIssues) {
         core.info('Library '+key+' - '+librariesWithIssues[key]['lib']['name'])
 
@@ -122,7 +127,7 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     console.log('Adding PR to the issue now.')
                         
-                    await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    await customRequest('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },
@@ -153,7 +158,7 @@ const syncExistingOpenIssues = async (options:any) => {
 
                     console.log('Adding PR to the issue now.')
                         
-                    await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    await customRequest('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },

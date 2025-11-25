@@ -9,7 +9,8 @@ export class GithubHandler {
     private client:any;
 
     constructor(private token:string) {
-        this.client = getOctokit(token); 
+        const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+        this.client = getOctokit(token, { baseUrl });
     }
 
     public async getVeracodeLabel ()  {

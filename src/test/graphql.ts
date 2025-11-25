@@ -6,7 +6,8 @@ export class TestGraph{
     private client: any;
 
     constructor(private token:string = process.env.GITHUB_TOKEN || '') {
-        this.client = getOctokit(token); 
+      const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+      this.client = getOctokit(token, { baseUrl }); 
     }
     // ,filterBy: {states: OPEN}
     public async getIssues ()  {
