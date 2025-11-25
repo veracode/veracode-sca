@@ -45,8 +45,7 @@ export async function runAction(options: Options) {
         extraCommands = `${extraCommands}${options.recursive ? '--recursive ' : ''}${options.quick ? '--quick ' : ''}${options.allowDirty ? '--allow-dirty ' : ''}${options.updateAdvisor ? '--update-advisor ' : ''}${skipVMS ? '--skip-vms ' : ''}${noGraphs ? '--no-graphs ' : ''}${options.debug ? '--debug ' : ''}${skipCollectorsAttr}`;
 
         if (runnerOS == 'Windows') {
-            const powershellCommand = `powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest https://sca-downloads.veracode.com/ci.ps1 -OutFile $env:TEMP\\ci.ps1; & $env:TEMP\\ci.ps1 -s -- scan ${extraCommands} ${commandOutput}"`
-
+            const powershellCommand = `powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest https://sca-downloads.veracode.com/ci.ps1 -OutFile $env:TEMP\\ci.ps1; & $env:TEMP\\ci.ps1 -s -- scan ${extraCommands} ${commandOutput}; exit $LASTEXITCODE"`
             if (options.createIssues) {
                 core.info('Starting the scan')
                 let output: string = ''
@@ -58,8 +57,9 @@ export async function runAction(options: Options) {
                     }
                 }
                 catch (error: any) {
+                    console.log((error.stdout).toString())
                     if (error.status != null && error.status > 0 && (options.breakBuildOnPolicyFindings == 'true')) {
-                        let summary_info = "Veraocde SCA Scan failed with exit code " + error.statuscode + "\n"
+                        let summary_info = "Veraocde SCA Scan failed with exit code " + error.status + "\n"
                         core.info(output)
                         core.setFailed(summary_info)
                     }
@@ -139,8 +139,9 @@ export async function runAction(options: Options) {
                     core.info(output);
                 }
                 catch (error: any) {
+                    console.log((error.stdout).toString())
                     if (error.status != null && error.status > 0 && (options.breakBuildOnPolicyFindings == 'true')) {
-                        let summary_info = "Veraocde SCA Scan failed with exit code " + error.statuscode + "\n"
+                        let summary_info = "Veraocde SCA Scan failed with exit code " + error.status + "\n"
                         core.setFailed(summary_info)
                     }
                 }
