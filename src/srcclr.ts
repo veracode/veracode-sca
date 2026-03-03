@@ -760,12 +760,12 @@ async function generateVulnList(options: Options): Promise<void> {
         core.info('veracode-sca-fix is enabled, proceeding with vulnerability list generation');
 
         // Check if PR number exists in options
-        if (!options.prNumber || options.prNumber === '' || options.prNumber === '0') {
+        if (!options.prNumber || options.prNumber === 0 || isNaN(options.prNumber)) {
             core.warning('No PR number found in options, skipping vulnerability list generation');
             return;
         }
 
-        const prNumber = parseInt(options.prNumber, 10);
+        const prNumber = options.prNumber;
         core.info(`PR number found: ${prNumber}`);
 
         // Check if scaResults.json exists
@@ -922,31 +922,6 @@ async function generateVulnList(options: Options): Promise<void> {
 
             await artifactClient.uploadArtifact(artifactName, files, rootDirectory, artifactOptions);
             core.info('Successfully uploaded vulnerability listing JSON');
-
-            // Create and upload metadata
-            const metadata = {
-                repository: {
-                    branch: options.clientRepositoryBranch || '',
-                    name: options.clientRepositoryName || '',
-                    owner: options.clientRepositoryOwner || '',
-                    full_name: options.clientRepositoryFullName || ''
-                },
-                profile_name: options.profileName || '',
-                pull_request: {
-                    num: prNumber || 0
-                }
-            };
-
-            const metadataFile = 'sca-vuln-listing-metadata.json';
-            writeFileSync(metadataFile, JSON.stringify(metadata, null, 2));
-            core.info('Created metadata file');
-
-            // Upload metadata artifact
-            const metadataArtifactName = 'sca-vuln-listing-metadata';
-            const metadataFiles = [metadataFile];
-
-            await artifactClient.uploadArtifact(metadataArtifactName, metadataFiles, rootDirectory, artifactOptions);
-            core.info('Successfully uploaded vulnerability listing metadata');
 
             core.info('=== SCA Vulnerability List Generation Complete ===');
 

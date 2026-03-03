@@ -81,22 +81,6 @@ inputs:
     description: "Pull request number for SCA vuln list metadata"
     required: false
     default: ""
-  client_repository_branch:
-    description: "Client repository branch for SCA vuln list metadata"
-    required: false
-    default: ""
-  client_repository_name:
-    description: "Client repository name for SCA vuln list metadata"
-    required: false
-    default: ""
-  client_repository_owner:
-    description: "Client repository owner for SCA vuln list metadata"
-    required: false
-    default: ""
-  client_repository_full_name:
-    description: "Client repository full name (owner/repo) for SCA vuln list metadata"
-    required: false
-    default: ""
 outputs:
   scan-url:
     description: "URL to the Veracode SCA scan results report"

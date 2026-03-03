@@ -19,11 +19,7 @@ export interface Options {
     breakBuildOnPolicyFindings: string,
     scaFixEnabled: boolean,
     profileName: string,
-    prNumber: string,
-    clientRepositoryBranch: string,
-    clientRepositoryName: string,
-    clientRepositoryOwner: string,
-    clientRepositoryFullName: string
+    prNumber?: number
 }
 
 

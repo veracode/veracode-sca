@@ -106053,11 +106053,7 @@ const options = {
     breakBuildOnPolicyFindings: core.getInput('breakBuildOnPolicyFindings'),
     scaFixEnabled: core.getBooleanInput('sca_fix_enabled'),
     profileName: core.getInput('profile_name'),
-    prNumber: core.getInput('pr_number'),
-    clientRepositoryBranch: core.getInput('client_repository_branch'),
-    clientRepositoryName: core.getInput('client_repository_name'),
-    clientRepositoryOwner: core.getInput('client_repository_owner'),
-    clientRepositoryFullName: core.getInput('client_repository_full_name')
+    prNumber: parseInt(core.getInput('pr_number'), 10)
 };
 try {
     (0, srcclr_1.runAction)(options);
@@ -107263,11 +107259,11 @@ function generateVulnList(options) {
             }
             core.info('veracode-sca-fix is enabled, proceeding with vulnerability list generation');
             // Check if PR number exists in options
-            if (!options.prNumber || options.prNumber === '' || options.prNumber === '0') {
+            if (!options.prNumber || options.prNumber === 0 || isNaN(options.prNumber)) {
                 core.warning('No PR number found in options, skipping vulnerability list generation');
                 return;
             }
-            const prNumber = parseInt(options.prNumber, 10);
+            const prNumber = options.prNumber;
             core.info(`PR number found: ${prNumber}`);
             // Check if scaResults.json exists
             if (!(0, fs_1.existsSync)(index_1.SCA_OUTPUT_FILE)) {
@@ -107393,27 +107389,6 @@ function generateVulnList(options) {
                 };
                 yield artifactClient.uploadArtifact(artifactName, files, rootDirectory, artifactOptions);
                 core.info('Successfully uploaded vulnerability listing JSON');
-                // Create and upload metadata
-                const metadata = {
-                    repository: {
-                        branch: options.clientRepositoryBranch || '',
-                        name: options.clientRepositoryName || '',
-                        owner: options.clientRepositoryOwner || '',
-                        full_name: options.clientRepositoryFullName || ''
-                    },
-                    profile_name: options.profileName || '',
-                    pull_request: {
-                        num: prNumber || 0
-                    }
-                };
-                const metadataFile = 'sca-vuln-listing-metadata.json';
-                (0, fs_2.writeFileSync)(metadataFile, JSON.stringify(metadata, null, 2));
-                core.info('Created metadata file');
-                // Upload metadata artifact
-                const metadataArtifactName = 'sca-vuln-listing-metadata';
-                const metadataFiles = [metadataFile];
-                yield artifactClient.uploadArtifact(metadataArtifactName, metadataFiles, rootDirectory, artifactOptions);
-                core.info('Successfully uploaded vulnerability listing metadata');
                 core.info('=== SCA Vulnerability List Generation Complete ===');
             }
             catch (error) {

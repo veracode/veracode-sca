@@ -23,12 +23,7 @@ const options: Options = {
     platformType:'CLOUD',
     breakBuildOnPolicyFindings:'false',
     scaFixEnabled: false,
-    profileName: '',
-    prNumber: '',
-    clientRepositoryBranch: '',
-    clientRepositoryName: '',
-    clientRepositoryOwner: '',
-    clientRepositoryFullName: ''
+    profileName: ''
 }
 
 runAction(options);

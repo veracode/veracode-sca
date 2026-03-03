@@ -26,11 +26,7 @@ const options: Options = {
     breakBuildOnPolicyFindings: core.getInput('breakBuildOnPolicyFindings'),
     scaFixEnabled: core.getBooleanInput('sca_fix_enabled'),
     profileName: core.getInput('profile_name'),
-    prNumber: core.getInput('pr_number'),
-    clientRepositoryBranch: core.getInput('client_repository_branch'),
-    clientRepositoryName: core.getInput('client_repository_name'),
-    clientRepositoryOwner: core.getInput('client_repository_owner'),
-    clientRepositoryFullName: core.getInput('client_repository_full_name')
+    prNumber: parseInt(core.getInput('pr_number'), 10)
 }
 
 try {
