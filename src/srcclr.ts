@@ -928,7 +928,7 @@ async function generateVulnList(options: Options): Promise<void> {
             core.info(`Veracode CLI successfully installed and verified at: ${cliExecutablePath}`);
 
             // Build the veracode fix sca command for Windows using full path
-            veracodeCommand = `"${cliExecutablePath}" fix sca "${workingDir}" -r "${workingDir}\\${SCA_OUTPUT_FILE}" --list-only --json "${vulnListingFile}"`;
+            veracodeCommand = `"${cliExecutablePath}" fix sca "${workingDir}" -r "${workingDir}\\${SCA_OUTPUT_FILE}" --list-only --transitive --json "${vulnListingFile}"`;
 
             core.info(`Running command: ${veracodeCommand}`);
 
@@ -954,7 +954,7 @@ async function generateVulnList(options: Options): Promise<void> {
             core.info(`CLI executable path: ${cliExecutablePath}`);
 
             // Build the veracode fix sca command
-            veracodeCommand = `${cliExecutablePath}/veracode fix sca "${workingDir}" -r "${workingDir}/${SCA_OUTPUT_FILE}" --list-only --json "${vulnListingFile}"`;
+            veracodeCommand = `${cliExecutablePath}/veracode fix sca "${workingDir}" -r "${workingDir}/${SCA_OUTPUT_FILE}" --list-only --transitive --json "${vulnListingFile}"`;
 
             core.info(`Running command: ${veracodeCommand}`);
         }

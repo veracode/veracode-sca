@@ -107405,7 +107405,7 @@ function generateVulnList(options) {
                 }
                 core.info(`Veracode CLI successfully installed and verified at: ${cliExecutablePath}`);
                 // Build the veracode fix sca command for Windows using full path
-                veracodeCommand = `"${cliExecutablePath}" fix sca "${workingDir}" -r "${workingDir}\\${index_1.SCA_OUTPUT_FILE}" --list-only --json "${vulnListingFile}"`;
+                veracodeCommand = `"${cliExecutablePath}" fix sca "${workingDir}" -r "${workingDir}\\${index_1.SCA_OUTPUT_FILE}" --list-only --transitive --json "${vulnListingFile}"`;
                 core.info(`Running command: ${veracodeCommand}`);
             }
             else {
@@ -107425,7 +107425,7 @@ function generateVulnList(options) {
                 cliExecutablePath = `${helperCliPath}/${cliFileName}`;
                 core.info(`CLI executable path: ${cliExecutablePath}`);
                 // Build the veracode fix sca command
-                veracodeCommand = `${cliExecutablePath}/veracode fix sca "${workingDir}" -r "${workingDir}/${index_1.SCA_OUTPUT_FILE}" --list-only --json "${vulnListingFile}"`;
+                veracodeCommand = `${cliExecutablePath}/veracode fix sca "${workingDir}" -r "${workingDir}/${index_1.SCA_OUTPUT_FILE}" --list-only --transitive --json "${vulnListingFile}"`;
                 core.info(`Running command: ${veracodeCommand}`);
             }
             // Run the veracode fix sca command
