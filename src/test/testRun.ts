@@ -10,7 +10,6 @@ const options: Options = {
     url: 'https://www.github.com/dancancro/great-big-example-application',
     github_token: process.env.GITHUB_TOKEN || '',
     createIssues: false,
-    jsonOutput: false,
     failOnCVSS: 10,
     path: '.',
     debug:false,

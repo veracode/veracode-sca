@@ -106039,7 +106039,6 @@ const options = {
     url: core.getInput('url'),
     github_token: core.getInput('github_token', { required: true }),
     createIssues: core.getBooleanInput('create-issues'),
-    jsonOutput: core.getBooleanInput('json-output'),
     allowDirty: core.getBooleanInput('allow-dirty'),
     failOnCVSS: parseFloat(core.getInput('fail-on-cvss')) || 10,
     path: core.getInput('path', { trimWhitespace: true }) || '.',
@@ -106684,104 +106683,47 @@ const extractScanUrl = (output) => {
     return null;
 };
 /**
- * TEMPORARY: Sequential dual-scan wrapper for SCA Fix support
- * When scaFixEnabled is true, runs txt scan followed by json scan in same action
- * TODO: Remove this wrapper when scanner supports native dual output (txt + json simultaneously)
+ * Upload SCA scan artifacts
+ * @param artifactClient - GitHub Actions artifact client
+ * @param artifactName - Name of the artifact to create
+ * @param files - Array of file paths to include in artifact
  */
-function runSequentialDualScans(options) {
+function uploadArtifacts(artifactClient, artifactName, files) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info('=== Starting Sequential Dual-Scan Mode ===');
-        core.info('Note: Running TXT scan first, then JSON scan sequentially to avoid deadlock');
-        // Run TXT scan first (skip artifact upload and vuln list generation - will handle both later)
-        core.info('Step 1: Running TXT scan...');
-        const txtOptions = Object.assign(Object.assign({}, options), { jsonOutput: false });
-        yield runSingleScan(txtOptions, true, // skipArtifactUpload
-        true // skipVulnListGeneration
-        );
-        core.info('✓ TXT scan completed');
-        // Run JSON scan second
-        core.info('Step 2: Running JSON scan...');
-        const jsonOptions = Object.assign(Object.assign({}, options), { jsonOutput: true });
-        try {
-            yield runSingleScan(jsonOptions, true, // skipArtifactUpload
-            true // skipVulnListGeneration
-            );
-            core.info('✓ JSON scan completed');
-        }
-        catch (jsonError) {
-            core.warning(`JSON scan encountered an issue, but TXT results are available: ${jsonError.message || jsonError}`);
-        }
-        // Combine both scan results into single artifact
-        core.info('Step 3: Uploading combined scan results...');
-        yield combineScanArtifacts();
-        // Generate vulnerability list after both scans complete
-        core.info('Step 4: Generating vulnerability list...');
-        yield generateVulnList(options);
-    });
-}
-/**
- * Combines both scaResults.txt and scaResults.json into single artifact
- * When scanner supports native dual output, this function can be removed
- */
-function combineScanArtifacts() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { DefaultArtifactClient } = __nccwpck_require__(76846);
-        const artifactV1 = __nccwpck_require__(20166);
-        let artifactClient;
-        const platformType = process.env.PLATFORM_TYPE || 'STANDARD';
-        if (platformType === 'ENTERPRISE') {
-            artifactClient = artifactV1.create();
-        }
-        else {
-            artifactClient = new DefaultArtifactClient();
-        }
-        const files = [];
-        if ((0, fs_1.existsSync)('scaResults.txt')) {
-            files.push('scaResults.txt');
-        }
-        if ((0, fs_1.existsSync)(index_1.SCA_OUTPUT_FILE)) {
-            files.push(index_1.SCA_OUTPUT_FILE);
-        }
-        if (files.length === 0) {
-            core.warning('No scan results found to combine');
-            return;
-        }
-        try {
-            yield artifactClient.uploadArtifact('Veracode Agent Based SCA Results', files, process.cwd(), { continueOnError: true });
-            core.info(`✓ Combined artifact uploaded with ${files.length} file(s)`);
-        }
-        catch (error) {
-            core.warning(`Failed to upload combined artifact: ${error.message || error}`);
-        }
-    });
-}
-/**
- * Helper to upload artifact conditionally
- * Skips upload if skipArtifactUpload is true (used in dual-scan mode)
- */
-function uploadArtifactIfNeeded(artifactClient, artifactName, files, skipArtifactUpload, fileType) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (skipArtifactUpload) {
-            core.info(`Skipping ${fileType.toUpperCase()} artifact upload (will be combined with other scans)`);
-            return;
-        }
-        core.info(`Store ${fileType.toUpperCase()} Results as Artifact`);
+        const fileList = files.join(', ');
+        core.info(`Uploading artifact '${artifactName}' with files: ${fileList}`);
         try {
             yield artifactClient.uploadArtifact(artifactName, files, process.cwd(), { continueOnError: true });
+            core.info(`✓ Successfully uploaded artifact with ${files.length} file(s)`);
         }
         catch (error) {
-            core.warning(`Failed to upload ${fileType} artifact: ${error.message || error}`);
+            core.warning(`Failed to upload artifact: ${error.message || error}`);
         }
     });
 }
 /**
- * Runs a single scan (txt or json based on options.jsonOutput)
- * This is the original runAction logic extracted for reuse
- * @param options - Scan options
- * @param skipArtifactUpload - If true, skip artifact upload (used in dual-scan mode where combineScanArtifacts handles it)
- * @param skipVulnListGeneration - If true, skip vulnerability list generation (used in dual-scan mode where it's called after combining)
+ * When using --show-cli flag, both JSON and CLI text are produced
+ * This helper writes the CLI output (stdout) to scaResults.txt
+ * @param cliOutput - The stdout from the scan command
  */
-function runSingleScan(options, skipArtifactUpload = false, skipVulnListGeneration = false) {
+function writeCliOutputToFile(cliOutput) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            (0, fs_2.writeFileSync)('scaResults.txt', cliOutput);
+            core.info('CLI output written to scaResults.txt');
+        }
+        catch (error) {
+            core.warning(`Failed to write CLI output to file: ${error.message || error}`);
+        }
+    });
+}
+/**
+ * Runs a unified scan with --show-cli flag when sca_fix_enabled
+ * When sca_fix_enabled=true: Generates both JSON and CLI text output in one scan
+ * When sca_fix_enabled=false: Generates output based on createIssues/jsonOutput flags
+ * @param options - Scan options
+ */
+function runScan(options) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -106805,10 +106747,21 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
             }
             const noGraphs = options["no-graphs"];
             const skipVMS = options["skip-vms"];
-            const shouldGenerateJson = options.createIssues || options.jsonOutput;
-            const commandOutput = options.createIssues || options.jsonOutput ? `--json=${index_1.SCA_OUTPUT_FILE}` : '';
-            // Artifact name depends on output type: TXT uses standard name, JSON uses sca-fix specific name
-            const artifactNameBase = options.jsonOutput ? 'Veracode Agent Based SCA Results Json' : 'Veracode Agent Based SCA Results';
+            // Generate JSON when sca_fix_enabled (uses --show-cli for both JSON and CLI text in single scan)
+            // or when createIssues is true (JSON for issue creation)
+            const shouldGenerateJson = options.createIssues || options.scaFixEnabled;
+            let commandOutput = '';
+            if (options.scaFixEnabled) {
+                // Use --json --show-cli for unified output (JSON to file, CLI text to stdout)
+                commandOutput = `--json=${index_1.SCA_OUTPUT_FILE} --show-cli`;
+            }
+            else if (options.createIssues) {
+                // JSON output for issue creation
+                commandOutput = `--json=${index_1.SCA_OUTPUT_FILE}`;
+            }
+            // Always use the base artifact name regardless of output format
+            // (whether it contains JSON+TXT with --show-cli or TXT only)
+            const artifactNameBase = 'Veracode Agent Based SCA Results';
             extraCommands = `${extraCommands}${options.recursive ? '--recursive ' : ''}${options.quick ? '--quick ' : ''}${options.allowDirty ? '--allow-dirty ' : ''}${options.updateAdvisor ? '--update-advisor ' : ''}${skipVMS ? '--skip-vms ' : ''}${noGraphs ? '--no-graphs ' : ''}${options.debug ? '--debug ' : ''}${skipCollectorsAttr}${scanCollectorsAttr}`;
             if (runnerOS == 'Windows') {
                 const powershellCommand = `powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest https://sca-downloads.veracode.com/ci.ps1 -OutFile $env:TEMP\\ci.ps1; & $env:TEMP\\ci.ps1 -s -- scan ${extraCommands} ${commandOutput}"`;
@@ -106883,7 +106836,7 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
                         (0, index_1.run)(options, core.info);
                         core.info(summary_message);
                     }
-                    // Store output files as artifacts (skip if in dual-scan mode)
+                    // Store output files as artifacts
                     const { DefaultArtifactClient } = __nccwpck_require__(76846);
                     const artifactV1 = __nccwpck_require__(20166);
                     let artifactClient;
@@ -106895,7 +106848,17 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
                         artifactClient = new DefaultArtifactClient();
                         core.info(`Initialized the artifact object using version V2.`);
                     }
-                    yield uploadArtifactIfNeeded(artifactClient, artifactNameBase, ['scaResults.json'], skipArtifactUpload, 'json');
+                    // When --show-cli is used, we also have CLI output that needs to be saved
+                    if (options.scaFixEnabled) {
+                        // Write the CLI output (stdout) to scaResults.txt
+                        yield writeCliOutputToFile(output);
+                        // Upload both JSON and TXT files
+                        yield uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.json', 'scaResults.txt']);
+                    }
+                    else {
+                        // JSON-only upload for create-issues
+                        yield uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.json']);
+                    }
                     core.info('Finish command');
                 }
                 else {
@@ -106984,7 +106947,7 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
                         artifactClient = new DefaultArtifactClient();
                         core.info(`Initialized the artifact object using version V2.`);
                     }
-                    yield uploadArtifactIfNeeded(artifactClient, artifactNameBase, ['scaResults.txt'], skipArtifactUpload, 'txt');
+                    yield uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.txt']);
                     //Pull request decoration
                     core.info('check if we run on a pull request');
                     let pullRequest = process.env.GITHUB_REF;
@@ -107115,7 +107078,7 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
                                 let summary_info = "Veracode SCA Scan failed with exit code " + code + "\n";
                                 core.setFailed(summary_info);
                             }
-                            // Store output files as artifacts (skip if in dual-scan mode)
+                            // Store output files as artifacts
                             const { DefaultArtifactClient } = __nccwpck_require__(76846);
                             const artifactV1 = __nccwpck_require__(20166);
                             let artifactClient;
@@ -107127,7 +107090,17 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
                                 artifactClient = new DefaultArtifactClient();
                                 core.info(`Initialized the artifact object using version V2.`);
                             }
-                            yield uploadArtifactIfNeeded(artifactClient, artifactNameBase, ['scaResults.json'], skipArtifactUpload, 'json');
+                            // When --show-cli is used, we also have CLI output that needs to be saved
+                            if (options.scaFixEnabled) {
+                                // Write the CLI output (stdout) to scaResults.txt
+                                yield writeCliOutputToFile(output);
+                                // Upload both JSON and TXT files
+                                yield uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.json', 'scaResults.txt']);
+                            }
+                            else {
+                                // Traditional JSON-only upload
+                                yield uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.json']);
+                            }
                             core.info('Finish command');
                             resolve();
                         }));
@@ -107231,7 +107204,7 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
                                 artifactClient = new DefaultArtifactClient();
                                 core.info(`Initialized the artifact object using version V2.`);
                             }
-                            yield uploadArtifactIfNeeded(artifactClient, artifactNameBase, ['scaResults.txt'], skipArtifactUpload, 'txt');
+                            yield uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.txt']);
                             //Pull request decoration
                             core.info('check if we run on a pull request');
                             let pullRequest = process.env.GITHUB_REF;
@@ -107274,10 +107247,8 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
                     });
                 }
             }
-            // Generate vulnerability list after scan completes (skip in dual-scan mode)
-            if (!skipVulnListGeneration) {
-                yield generateVulnList(options);
-            }
+            // Generate vulnerability list after scan completes
+            yield generateVulnList(options);
         }
         catch (error) {
             if (error instanceof Error) {
@@ -107294,19 +107265,13 @@ function runSingleScan(options, skipArtifactUpload = false, skipVulnListGenerati
     });
 }
 /**
- * Main entry point - routes to dual-scan or single-scan based on scaFixEnabled
+ * Main entry point - runs a single unified scan
  */
 function runAction(options) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (options.scaFixEnabled) {
-                // Temporary dual-scan mode for SCA Fix support
-                yield runSequentialDualScans(options);
-            }
-            else {
-                // Standard single scan (backward compatible)
-                yield runSingleScan(options);
-            }
+            // Single unified scan: when sca_fix_enabled, includes --show-cli for both JSON and CLI output
+            yield runScan(options);
         }
         catch (error) {
             if (error instanceof Error) {

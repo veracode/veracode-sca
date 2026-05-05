@@ -5,7 +5,6 @@ export interface Options {
     url: string,
     github_token: string,
     createIssues: boolean,
-    jsonOutput: boolean,
     failOnCVSS: number,
     path: string,
     debug: boolean,
