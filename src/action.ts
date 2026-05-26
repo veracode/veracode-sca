@@ -4,6 +4,7 @@ import * as core from '@actions/core'
 import { Options } from "./options";
 import {runAction} from './srcclr';
 
+
 const options: Options = {
     quick: core.getBooleanInput('quick'),
     updateAdvisor: core.getBooleanInput('update_advisor'),
@@ -18,8 +19,17 @@ const options: Options = {
     "skip-vms": core.getBooleanInput('skip-vms'),
     "no-graphs": core.getBooleanInput('no-graphs'),
     recursive: core.getBooleanInput('recursive'),
-    "skip-collectors": core.getInput('skip-collectors').split(',')
-    
+    "skip-collectors": core.getInput('skip-collectors').split(','),
+    "scan-collectors": core.getInput('scan-collectors').split(','),
+    platformType: core.getInput('platformType'),
+    breakBuildOnPolicyFindings: core.getInput('breakBuildOnPolicyFindings'),
+    scaFixEnabled: core.getBooleanInput('sca_fix_enabled'),
+    profileName: core.getInput('profile_name'),
+    prNumber: parseInt(core.getInput('pr_number'), 10)
 }
 
-runAction(options);
+try {
+    runAction(options);
+} catch (error) {
+    core.setFailed(error instanceof Error ? error.message : String(error));
+}

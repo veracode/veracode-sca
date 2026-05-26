@@ -84,6 +84,11 @@ const syncExistingOpenIssues = async (options:any) => {
     let pullRequest = process.env.GITHUB_REF
     let isPR:any = pullRequest?.indexOf("pull")
 
+    const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
+    const customRequest = request.defaults({
+        baseUrl
+    });
+
     for (var key in librariesWithIssues) {
         core.info('Library '+key+' - '+librariesWithIssues[key]['lib']['name'])
 
@@ -139,7 +144,7 @@ const syncExistingOpenIssues = async (options:any) => {
                     delete process.env.https_proxy
                     delete process.env.no_proxy
                         
-                    await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    await customRequest('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },
@@ -176,8 +181,7 @@ const syncExistingOpenIssues = async (options:any) => {
                     var pr_link = `Veracode issue link to PR: https://github.com/`+owner+`/`+repo+`/pull/`+pr_commentID
 
                     console.log('Adding PR to the issue now.')
-                        
-
+                    
                     //we dont need a proxy for the artifact upload
                     // Store current proxy environment variables
                     const HTTP_PROXY = process.env.HTTP_PROXY
@@ -195,7 +199,7 @@ const syncExistingOpenIssues = async (options:any) => {
                     delete process.env.https_proxy
                     delete process.env.no_proxy
 
-                    await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                    await customRequest('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                         headers: {
                             authorization: authToken
                         },
