@@ -236,7 +236,7 @@ async function runScan(options: Options): Promise<void> {
                     let pullRequest = process.env.GITHUB_REF
                     let isPR: any = pullRequest?.indexOf("pull")
                     let summary_message = ""
-
+                    
                     if (isPR >= 1) {
                         core.info('We run on a PR, add more messaging')
                         const context = github.context
@@ -284,6 +284,22 @@ async function runScan(options: Options): Promise<void> {
                     core.info(`Initialized the artifact object using version V2.`);
                 }
 
+                //we dont need a proxy for the artifact upload
+                // Store current proxy environment variables
+                const HTTP_PROXY = process.env.HTTP_PROXY
+                const HTTPS_PROXY = process.env.HTTPS_PROXY
+                const NO_PROXY = process.env.NO_PROXY
+                const http_proxy = process.env.http_proxy
+                const https_proxy = process.env.https_proxy
+                const no_proxy = process.env.no_proxy
+
+                // Unset proxy environment variables
+                delete process.env.HTTP_PROXY
+                delete process.env.HTTPS_PROXY
+                delete process.env.NO_PROXY
+                delete process.env.http_proxy
+                delete process.env.https_proxy
+                delete process.env.no_proxy
                 // When --show-cli is used, we also have CLI output that needs to be saved
                 if (options.scaFixEnabled) {
                     // Write the CLI output (stdout) to scaResults.txt
@@ -294,6 +310,14 @@ async function runScan(options: Options): Promise<void> {
                     // JSON-only upload for create-issues
                     await uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.json']);
                 }
+
+                // Restore proxy environment variables
+                if (HTTP_PROXY) process.env.HTTP_PROXY = HTTP_PROXY
+                if (HTTPS_PROXY) process.env.HTTPS_PROXY = HTTPS_PROXY
+                if (NO_PROXY) process.env.NO_PROXY = NO_PROXY
+                if (http_proxy) process.env.http_proxy = http_proxy
+                if (https_proxy) process.env.https_proxy = https_proxy
+                if (no_proxy) process.env.no_proxy = no_proxy
 
                 core.info('Finish command');
             } else {
@@ -388,8 +412,32 @@ async function runScan(options: Options): Promise<void> {
                     core.info(`Initialized the artifact object using version V2.`);
                 }
 
+                //we dont need a proxy for the artifact upload
+                // Store current proxy environment variables
+                const HTTP_PROXY = process.env.HTTP_PROXY
+                const HTTPS_PROXY = process.env.HTTPS_PROXY
+                const NO_PROXY = process.env.NO_PROXY
+                const http_proxy = process.env.http_proxy
+                const https_proxy = process.env.https_proxy
+                const no_proxy = process.env.no_proxy
+
+                // Unset proxy environment variables
+                delete process.env.HTTP_PROXY
+                delete process.env.HTTPS_PROXY
+                delete process.env.NO_PROXY
+                delete process.env.http_proxy
+                delete process.env.https_proxy
+                delete process.env.no_proxy
+                
                 await uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.txt'])
 
+                // Restore proxy environment variables
+                if (HTTP_PROXY) process.env.HTTP_PROXY = HTTP_PROXY
+                if (HTTPS_PROXY) process.env.HTTPS_PROXY = HTTPS_PROXY
+                if (NO_PROXY) process.env.NO_PROXY = NO_PROXY
+                if (http_proxy) process.env.http_proxy = http_proxy
+                if (https_proxy) process.env.https_proxy = https_proxy
+                if (no_proxy) process.env.no_proxy = no_proxy
                 //Pull request decoration
                 core.info('check if we run on a pull request')
                 let pullRequest = process.env.GITHUB_REF
@@ -410,8 +458,24 @@ async function runScan(options: Options): Promise<void> {
                     commentBody += output //.replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;');
                     commentBody += '</p></details>\n</pre>'
 
+                    //we dont need a proxy for the artifact upload
+                    // Store current proxy environment variables
+                    const HTTP_PROXY = process.env.HTTP_PROXY
+                    const HTTPS_PROXY = process.env.HTTPS_PROXY
+                    const NO_PROXY = process.env.NO_PROXY
+                    const http_proxy = process.env.http_proxy
+                    const https_proxy = process.env.https_proxy
+                    const no_proxy = process.env.no_proxy
 
+                    
 
+                    // Unset proxy environment variables
+                    delete process.env.HTTP_PROXY
+                    delete process.env.HTTPS_PROXY
+                    delete process.env.NO_PROXY
+                    delete process.env.http_proxy
+                    delete process.env.https_proxy
+                    delete process.env.no_proxy
 
                     try {
                         const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
@@ -427,6 +491,14 @@ async function runScan(options: Options): Promise<void> {
                     } catch (error: any) {
                         core.info(error);
                     }
+
+                    // Restore proxy environment variables
+                    if (HTTP_PROXY) process.env.HTTP_PROXY = HTTP_PROXY
+                    if (HTTPS_PROXY) process.env.HTTPS_PROXY = HTTPS_PROXY
+                    if (NO_PROXY) process.env.NO_PROXY = NO_PROXY
+                    if (http_proxy) process.env.http_proxy = http_proxy
+                    if (https_proxy) process.env.https_proxy = https_proxy
+                    if (no_proxy) process.env.no_proxy = no_proxy
 
                 }
 
@@ -555,6 +627,23 @@ async function runScan(options: Options): Promise<void> {
                         core.info(`Initialized the artifact object using version V2.`);
                     }
 
+                    //we dont need a proxy for the artifact upload
+                    // Store current proxy environment variables
+                    const HTTP_PROXY = process.env.HTTP_PROXY
+                    const HTTPS_PROXY = process.env.HTTPS_PROXY
+                    const NO_PROXY = process.env.NO_PROXY
+                    const http_proxy = process.env.http_proxy
+                    const https_proxy = process.env.https_proxy
+                    const no_proxy = process.env.no_proxy
+
+                    // Unset proxy environment variables
+                    delete process.env.HTTP_PROXY
+                    delete process.env.HTTPS_PROXY
+                    delete process.env.NO_PROXY
+                    delete process.env.http_proxy
+                    delete process.env.https_proxy
+                    delete process.env.no_proxy
+                    
                     // When --show-cli is used, we also have CLI output that needs to be saved
                     if (options.scaFixEnabled) {
                         // Write the CLI output (stdout) to scaResults.txt
@@ -566,6 +655,14 @@ async function runScan(options: Options): Promise<void> {
                         await uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.json']);
                     }
 
+                    // Restore proxy environment variables
+                    if (HTTP_PROXY) process.env.HTTP_PROXY = HTTP_PROXY
+                    if (HTTPS_PROXY) process.env.HTTPS_PROXY = HTTPS_PROXY
+                    if (NO_PROXY) process.env.NO_PROXY = NO_PROXY
+                    if (http_proxy) process.env.http_proxy = http_proxy
+                    if (https_proxy) process.env.https_proxy = https_proxy
+                    if (no_proxy) process.env.no_proxy = no_proxy
+                    
                     core.info('Finish command');
                     resolve();
                     });
@@ -676,8 +773,33 @@ async function runScan(options: Options): Promise<void> {
                         core.info(`Initialized the artifact object using version V2.`);
                     }
 
+                    //we dont need a proxy for the artifact upload
+                    // Store current proxy environment variables
+                    const HTTP_PROXY = process.env.HTTP_PROXY
+                    const HTTPS_PROXY = process.env.HTTPS_PROXY
+                    const NO_PROXY = process.env.NO_PROXY
+                    const http_proxy = process.env.http_proxy
+                    const https_proxy = process.env.https_proxy
+                    const no_proxy = process.env.no_proxy
+
+                    // Unset proxy environment variables
+                    delete process.env.HTTP_PROXY
+                    delete process.env.HTTPS_PROXY
+                    delete process.env.NO_PROXY
+                    delete process.env.http_proxy
+                    delete process.env.https_proxy
+                    delete process.env.no_proxy
+                    
                     await uploadArtifacts(artifactClient, artifactNameBase, ['scaResults.txt'])
 
+                    // Restore proxy environment variables
+                    if (HTTP_PROXY) process.env.HTTP_PROXY = HTTP_PROXY
+                    if (HTTPS_PROXY) process.env.HTTPS_PROXY = HTTPS_PROXY
+                    if (NO_PROXY) process.env.NO_PROXY = NO_PROXY
+                    if (http_proxy) process.env.http_proxy = http_proxy
+                    if (https_proxy) process.env.https_proxy = https_proxy
+                    if (no_proxy) process.env.no_proxy = no_proxy
+                    
                     //Pull request decoration
                     core.info('check if we run on a pull request')
                     let pullRequest = process.env.GITHUB_REF
@@ -698,6 +820,25 @@ async function runScan(options: Options): Promise<void> {
                         commentBody += output //.replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;');
                         commentBody += '</p></details>\n</pre>'
 
+                        //we dont need a proxy for the artifact upload
+                        // Store current proxy environment variables
+                        const HTTP_PROXY = process.env.HTTP_PROXY
+                        const HTTPS_PROXY = process.env.HTTPS_PROXY
+                        const NO_PROXY = process.env.NO_PROXY
+                        const http_proxy = process.env.http_proxy
+                        const https_proxy = process.env.https_proxy
+                        const no_proxy = process.env.no_proxy
+
+                        
+
+                        // Unset proxy environment variables
+                        delete process.env.HTTP_PROXY
+                        delete process.env.HTTPS_PROXY
+                        delete process.env.NO_PROXY
+                        delete process.env.http_proxy
+                        delete process.env.https_proxy
+                        delete process.env.no_proxy
+                        
                         try {
                             const baseUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
                             const octokit = github.getOctokit(options.github_token, { baseUrl });
@@ -713,6 +854,13 @@ async function runScan(options: Options): Promise<void> {
                             core.info(error);
                         }
 
+                         // Restore proxy environment variables
+                        if (HTTP_PROXY) process.env.HTTP_PROXY = HTTP_PROXY
+                        if (HTTPS_PROXY) process.env.HTTPS_PROXY = HTTPS_PROXY
+                        if (NO_PROXY) process.env.NO_PROXY = NO_PROXY
+                        if (http_proxy) process.env.http_proxy = http_proxy
+                        if (https_proxy) process.env.https_proxy = https_proxy
+                        if (no_proxy) process.env.no_proxy = no_proxy
                     }
 
                     // if scan was set to fail the pipeline should fail and show a summary of the scan results
