@@ -188,7 +188,7 @@ async function runScan(options: Options): Promise<void> {
         // Always use the base artifact name regardless of output format
         // (whether it contains JSON+TXT with --show-cli or TXT only)
         const artifactNameBase = 'Veracode Agent Based SCA Results';
-        extraCommands = `${extraCommands}${options.recursive ? '--recursive ' : ''}${options.quick ? '--quick ' : ''}${options.allowDirty ? '--allow-dirty ' : ''}${options.updateAdvisor ? '--update-advisor ' : ''}${skipVMS ? '--skip-vms ' : ''}${noGraphs ? '--no-graphs ' : ''}${options.debug ? '--debug ' : ''}${skipCollectorsAttr}${scanCollectorsAttr}`;
+        extraCommands = `${extraCommands}${options.recursive ? '--recursive ' : ''}${options.quick ? '--quick ' : ''}${options.allowDirty ? '--allow-dirty ' : ''}${options.updateAdvisor ? '--update-advisor ' : ''}${skipVMS ? '--skip-vms ' : ''}${noGraphs ? '--no-graphs ' : ''}${options.noUpload ? '--no-upload ' : ''}${options.debug ? '--debug ' : ''}${skipCollectorsAttr}${scanCollectorsAttr}`;
 
         if (runnerOS == 'Windows') {
             const powershellCommand = `powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest https://sca-downloads.veracode.com/ci.ps1 -OutFile $env:TEMP\\ci.ps1; & $env:TEMP\\ci.ps1 -s -- scan ${extraCommands} ${commandOutput}"`

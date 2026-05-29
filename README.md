@@ -122,6 +122,11 @@ __Optional__ - do not include dependency graphs in the JSON output.
 
 Default Value: __false__
 
+### `no-upload`
+__Optional__ - run the Veracode SCA scan with `--no-upload` to skip uploading scan results to the Veracode platform.
+
+Default Value: __false__
+
 ## Examples
 
 ### Scan your repository with textual output

@@ -12,6 +12,7 @@ export interface Options {
     recursive:boolean,
     "skip-vms":boolean,
     "no-graphs":boolean,
+    noUpload: boolean,
     "skip-collectors": Array<string>,
     "scan-collectors": Array<string>
     platformType: string,
