@@ -19,6 +19,7 @@ const options: Options = {
     recursive:false,
     "skip-vms":false,
     "no-graphs":false,
+    noUpload: false,
     platformType:'CLOUD',
     breakBuildOnPolicyFindings:'false',
     scaFixEnabled: false,

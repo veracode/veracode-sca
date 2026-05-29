@@ -57,6 +57,10 @@ inputs:
     description: "Run the SRCCLR with the `--no-graphs` option"
     required: false
     default: "false"
+  no-upload:
+    description: "Run the SRCCLR with the `--no-upload` option to skip uploading scan results to the Veracode platform"
+    required: false
+    default: "false"
   platformType:
     description: 'Specifies the platform environment type — use CLOUD for GitHub.com or ENTERPRISE for GitHub Enterprise Server (GHES).'
     default: 'CLOUD'
