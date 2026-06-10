@@ -1,7 +1,3 @@
-> [!WARNING]
-> actions/upload-artifact@v3 and actions/download-artifact@v3 is scheduled for deprecation on **November 30, 2024**. [Learn more.](https://github.blog/changelog/2024-04-16-deprecation-notice-v3-of-the-artifact-actions/)
-> We've upgraded the version of @actions/artifact to 2.1.4, which now supports actions/upload-artifact@v4 and actions/download-artifact@v4. Please ensure compatibility by utilizing the v4 versions of actions/upload-artifact and actions/download-artifact.
-
 # Veracode Software Composition Analysis
 Veracode Software Composition Analysis (agent-based scan) as a GitHub Action with the following actions:
 - Run the Veracode SCA similar as the script in textual output mode
@@ -22,6 +18,39 @@ The run will store 2 different types of artifacts.
 If `create-issues` is set to true the artifact will be the json output stored as `scaResults.json`.  
 If `create-issues` is set to false the artifact will be the text output stored as `scaResults.txt`.  
 For both the artifact name will be `Veracode Agent Based SCA Results`.  
+
+## Outputs
+
+### `scan-url`
+
+**Optional** - URL to the Veracode SCA scan results report.
+
+This output parameter contains the URL to the detailed scan report in the Veracode platform. The URL is automatically extracted from the scan output when the scan completes successfully.
+
+**Usage Example:**
+
+```yaml
+jobs:
+  veracode-sca-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Run Veracode SCA
+        id: veracode-sca
+        env:
+          SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+        uses: veracode/veracode-sca@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          create-issues: true
+      
+      - name: Display scan URL
+        run: echo "View detailed report at: ${{ steps.veracode-sca.outputs.scan-url }}"
+```
+
+The URL is extracted from the scan output line containing "Full Report Details" and is available as `steps.<step-id>.outputs.scan-url` in your workflow.
   
 ### `github_token`
 
@@ -62,6 +91,11 @@ Default Value: __false__
 ### `skip-collectors`
 __Optional__ - run the Veracode SCA scan with the `--skip-collectors` attribute with comma sporated values. 
 The available values can be found here: [Scan directive](https://docs.veracode.com/r/c_sc_scan_directives) (scroll down to the `skip_collectors` directive).
+Default Value: __None__
+
+### `scan-collectors`
+__Optional__ - run the Veracode SCA scan with the `--scan-collectors` attribute with comma separated values.
+The available values can be found here: [Scan directive](https://docs.veracode.com/r/c_sc_scan_directives) (scroll down to the `scan_collectors` directive).
 Default Value: __None__
 
 ### `allow-dirty`
@@ -106,12 +140,16 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Run Veracode SCA
+        id: veracode-sca
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
         uses: veracode/veracode-sca@v2.1.10
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           create-issues: false   
+      
+      - name: Display scan URL
+        run: echo "View detailed report at: ${{ steps.veracode-sca.outputs.scan-url }}"
 ```
 
 ### Scan the local repository   
@@ -137,6 +175,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Run Veracode SCA
+        id: veracode-sca
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
         uses: veracode/veracode-sca@v2.1.10
@@ -144,6 +183,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           quick: true
           create-issues: true 
+      
+      - name: Display scan URL
+        run: echo "View detailed report at: ${{ steps.veracode-sca.outputs.scan-url }}"
 ```
 ## User Interface
 

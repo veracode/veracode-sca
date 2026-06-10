@@ -14,10 +14,15 @@ const options: Options = {
     path: '.',
     debug:false,
     "skip-collectors": [],
+    "scan-collectors": [],
     allowDirty: false,
     recursive:false,
     "skip-vms":false,
-    "no-graphs":false
+    "no-graphs":false,
+    platformType:'CLOUD',
+    breakBuildOnPolicyFindings:'false',
+    scaFixEnabled: false,
+    profileName: ''
 }
 
 runAction(options);
